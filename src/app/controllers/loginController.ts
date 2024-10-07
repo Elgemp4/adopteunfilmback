@@ -1,21 +1,23 @@
 
 import { RequestHandler } from "express";
-import AppDataSource from "../data-source.js";
-import { User } from "../entity/User.js";
+import { tryLogin } from "../services/orm/userORM.js";
+import { matchedData, validationResult } from "express-validator";
 
 
 
 export const login : RequestHandler = async (req, res) => {
-    const userRepo = AppDataSource.getRepository(User);
+    const error = validationResult(req);
+    
+    if(!error.isEmpty()){
+        res.json({message: "Bad request"});
+        return;
+    }
 
+    const {email, password} = matchedData(req);
     
-    const user = new User();
-    user.firstName = "Emilien"
-    user.lastName = "Marquegnies"
-    user.birthDate = new Date(2004, 10, 9);
+    const user = await tryLogin(email, password);
+
+    console.log(user);
     
-    await userRepo.save(user);
-    const users = await userRepo.find();
-    
-    res.json({"users" : users});
+    res.json(user);
 }

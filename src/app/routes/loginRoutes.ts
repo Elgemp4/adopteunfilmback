@@ -6,6 +6,8 @@ import { login } from "../controllers/loginController.js";
 const loginRouter = Router();
 
 loginRouter.get("/",
+    body("email").isEmail().escape(),
+    body("password").isString().escape(),
     login
 )
 

@@ -1,6 +1,7 @@
 import "reflect-metadata"
 import { DataSource } from "typeorm"
 import { User } from "./entity/User.js"
+import UserToken from "./entity/UserToken.js";
 
 /*type: "postgres",
     host: "localhost",
@@ -11,7 +12,7 @@ import { User } from "./entity/User.js"
 const AppDataSource = new DataSource({
     type: "sqlite",
     database: "test.db",
-    entities: [User],
+    entities: [User, UserToken],
     synchronize: true,
     logging: false,
 })

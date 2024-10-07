@@ -1,4 +1,5 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, JoinColumn, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
+import UserToken from "./UserToken.js";
 
 @Entity()
 export class User{
@@ -12,5 +13,15 @@ export class User{
     lastName: string;
 
     @Column()
+    email : string;
+
+    @Column()
+    password: string;
+
+    @Column()
     birthDate: Date;
+
+    @OneToMany(() => UserToken, (token) => token.user)
+    @JoinColumn()
+    token: UserToken[]
 }
