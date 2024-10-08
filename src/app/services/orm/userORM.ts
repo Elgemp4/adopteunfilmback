@@ -13,8 +13,5 @@ export async function tryLogin(email: string, password : string){
 
     const user = users[0];
 
-    user.password = undefined;
-
-
     return user;
 }
