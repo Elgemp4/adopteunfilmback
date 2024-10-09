@@ -1,5 +1,6 @@
-import { Column, Entity, JoinColumn, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
+import { BeforeInsert, BeforeUpdate, Column, Entity, JoinColumn, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 import UserToken from "./UserToken.js";
+import bcrypt from "bcrypt"
 
 @Entity()
 export class User{
@@ -12,11 +13,19 @@ export class User{
     @Column()
     lastName: string;
 
-    @Column()
+    @Column({
+        unique: true
+    })
     email : string;
 
     @Column()
     password: string;
+
+    @BeforeUpdate()
+    @BeforeInsert()
+    public hashPassword() {
+        this.password = bcrypt.hashSync(this.password, 10);
+    }
 
     @Column()
     birthDate: Date;
