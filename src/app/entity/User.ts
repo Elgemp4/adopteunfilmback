@@ -30,7 +30,6 @@ export class User{
     @Column()
     birthDate: Date;
 
-    @OneToMany(() => UserToken, (token) => token.user)
-    @JoinColumn()
-    token: UserToken[]
+    @OneToMany('UserToken', 'user')
+    tokens: UserToken[]
 }

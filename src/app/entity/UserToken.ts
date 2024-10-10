@@ -1,4 +1,4 @@
-import { BeforeInsert, BeforeUpdate, Column, Entity, ManyToOne, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { BeforeInsert, BeforeUpdate, Column, Entity, JoinColumn, ManyToOne, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 import { User } from "./User.js";
 
 import crypto from "crypto"
@@ -30,6 +30,7 @@ export default class UserToken{
         this.token = bytes.toString("hex"); 
     }
     
-    @ManyToOne(() => User, (user) => user.token)
-    user
+    @ManyToOne('User', 'tokens')
+    @JoinColumn({ name: 'userId' })
+    user: User
 }
