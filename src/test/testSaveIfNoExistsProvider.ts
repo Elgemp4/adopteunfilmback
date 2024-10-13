@@ -1,5 +1,5 @@
-import { saveIfNoExistsProvider } from "./services/orm/providerORM.js";
-import AppDataSource from "./data-source.js";
+import { saveIfNoExistsProvider } from "../app/services/orm/providerORM.js";
+import AppDataSource from "../app/data-source.js";
 
 // Sample provider data
 const sampleProviders = [
