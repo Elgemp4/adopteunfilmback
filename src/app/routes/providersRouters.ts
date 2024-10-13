@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { body } from "express-validator";
-import { getAllProviders, getUserProviders } from "../controllers/providersController.js";
+import {addUserProviders, getAllProviders, getUserProviders} from "../controllers/providersController.js";
 import forceValidation from "../middleware/validate.js";
 import validate from "../middleware/validate.js";
 import authenticate from "../middleware/authenticate.js";
@@ -22,7 +22,11 @@ providerRouter.get("/personal",
 )
 
 providerRouter.post("/personal",
-
+    authenticate,
+    validate([
+        body('providerId').isInt().escape(),
+    ]),
+    addUserProviders
 );
 
 export default providerRouter;
