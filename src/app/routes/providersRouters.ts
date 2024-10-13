@@ -24,7 +24,18 @@ providerRouter.get("/personal",
 providerRouter.post("/personal",
     authenticate,
     validate([
-        body('providerId').isInt().escape(),
+        body('providers')
+        .isArray({min: 1})
+        .custom((ids : Array<any>) => {
+            ids.forEach((value) => {
+                if(!Number.isInteger(value))
+                { 
+                    throw new Error("providerId should be an array of int")
+                }
+            });
+
+            return true
+        }).escape(),    
     ]),
     addUserProviders
 );

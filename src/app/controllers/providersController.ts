@@ -33,7 +33,7 @@ export const getUserProviders : RequestHandler = async (req, res) => {
 
 export const addUserProviders : RequestHandler = async (req, res) => {
     const user = req.body.user;
-    const providerIds = req.body.providerId;
+    const providerIds = req.body.providers;
 
     try {
         const userWithProviders = await saveUserProviders(user.id, providerIds);
