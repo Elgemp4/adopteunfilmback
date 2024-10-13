@@ -5,13 +5,13 @@ import headers from "./headers.js";
 
 const url = `${process.env.TMDB_URL}/discover/movie`;
 
-export async function suggestMovies(page: number){
+export async function suggestMovies(page: number, watchProviders: number[]){
     const params = {
         include_adult: "false",
         include_video: "false",
         language: "fr-FR",
         page,
-        //with_watch_providers: watchProviders,
+        with_watch_providers: watchProviders,
         sort_by: "popularity.desc"
     }
 
