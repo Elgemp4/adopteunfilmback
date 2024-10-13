@@ -5,16 +5,23 @@ import { RequestHandler } from 'express';
 import { User } from '../entity/User.js';
 import AppDataSource from '../data-source.js';
 import { getUserProviders } from '../services/orm/providerORM.js';
+import { evaluateMovie } from '../services/orm/movieORM.js';
 
 export const suggestMoviesController : RequestHandler = async (req, res) => {
-      const {page} = matchedData(req);
+  const userId = req.body.user.id;
 
-      const userRepo = AppDataSource.getRepository(User);
+  const providerIds : number[] = (await getUserProviders(userId)).map((provider) => provider.provider_id);
 
-      const userId = req.body.user.id;
+  const result = await suggestMovies(userId, providerIds);
+  res.json(result);
+}
 
-      const providerIds : number[] = (await getUserProviders(userId)).map((provider) => provider.provider_id);
+export const evaluateMovieController : RequestHandler = async (req, res) => {
+  const { movieId, appreciate, seen } = matchedData(req);
+  
+  const userId = req.body.user.id;
 
-      const result = await suggestMovies(userId, providerIds);
-      res.json(result);
-    }
+  await evaluateMovie(userId, movieId, appreciate, seen);
+
+  res.status(200).send();
+}

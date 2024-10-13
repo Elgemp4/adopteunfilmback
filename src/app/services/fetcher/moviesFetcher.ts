@@ -2,7 +2,7 @@ import axios from "axios";
 import "dotenv/config"
 import headers from "./headers.js";
 import { User } from "../../entity/User.js";
-import { getUserReview } from "../orm/movieORM.js";
+import { getUserReview, saveMovieIfNotExists } from "../orm/movieORM.js";
 
 
 const url = `${process.env.TMDB_URL}/discover/movie`;
@@ -13,11 +13,11 @@ export async function suggestMovies(userId: number, providerIds: number[]){
 
     while(unreviewedMovies.length < 10){
         const suggestedMovies = await getPage(page, providerIds);
-        
+
         for(const movie of suggestedMovies.results){
             const review = await getUserReview(userId, movie.id);
             if(review == undefined){
-                unreviewedMovies.push(movie);
+                unreviewedMovies.push(await saveMovieIfNotExists(movie));
             }
 
             if(unreviewedMovies.length > 10){
