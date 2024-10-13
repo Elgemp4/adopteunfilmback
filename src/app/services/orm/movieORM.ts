@@ -52,16 +52,13 @@ export async function evaluateMovie(userId, movieId, appreciate, seen){
     const movieReviewRepo = AppDataSource.getRepository(MovieReview);
     
     let review = await getUserReview(userId, movieId);
-    
     if(review == undefined){
         review = new MovieReview();
         review.userId = userId;
         review.movieId = movieId;
     }
-
     
-    review.appreciate = appreciate;
-    review.seen = seen;
-
+    review.appreciate = appreciate == 'true'; //MEH je suis pas convaincu de ça faut que je recherche un alternative
+    review.seen = seen == 'true';
     movieReviewRepo.save(review);
 }
