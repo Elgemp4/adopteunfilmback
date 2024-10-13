@@ -1,6 +1,18 @@
-import { BeforeInsert, BeforeUpdate, Column, Entity, JoinColumn, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
+import {
+    BeforeInsert,
+    BeforeUpdate,
+    Column,
+    Entity,
+    JoinColumn,
+    JoinTable,
+    ManyToMany,
+    OneToMany,
+    OneToOne,
+    PrimaryGeneratedColumn
+} from "typeorm";
 import UserToken from "./UserToken.js";
 import bcrypt from "bcrypt"
+import { Provider } from "./Provider.js";
 
 @Entity()
 export class User{
@@ -32,4 +44,12 @@ export class User{
 
     @OneToMany('UserToken', 'user')
     tokens: UserToken[]
+
+    @ManyToMany(() => Provider)
+    @JoinTable({
+        name: "user_providers",
+        joinColumn: { name: "user_id", referencedColumnName: "id" },
+        inverseJoinColumn: { name: "provider_id", referencedColumnName: "provider_id" }
+    })
+    providers: Provider[];
 }
