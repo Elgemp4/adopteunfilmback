@@ -4,9 +4,6 @@ import AppDataSource from './data-source.js';
 
 async function testFetchAndSaveProviders() {
     try {
-        // Initialize the data source
-        await AppDataSource.initialize();
-
         // Fetch providers
         const language = 'fr-FR';
         const watch_region = 'BE';
@@ -20,9 +17,6 @@ async function testFetchAndSaveProviders() {
         console.log('New providers saved:', newProviders);
     } catch (error) {
         console.error('Error testing fetch and save providers:', error);
-    } finally {
-        // Destroy the data source to close the connection
-        await AppDataSource.destroy();
     }
 }
 

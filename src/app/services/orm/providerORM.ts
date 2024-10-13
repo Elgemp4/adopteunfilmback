@@ -33,24 +33,14 @@ export async function saveIfNoExistsProvider(providers) {
 /**
  * Save the user's providers (and override previous providers)
  */
-export async function saveUserProviders(userId: number, providerIds: number[]) {
-    if (!Array.isArray(providerIds) || providerIds.length === 0) {
-        throw new Error("Invalid providerIds");
-    }
-
+export async function saveUserProviders(user: User, providerIds: number[]) {
     const userRepo = AppDataSource.getRepository(User);
     const providerRepo = AppDataSource.getRepository(Provider);
-
-    const user = await userRepo.findOne({ where: { id: userId }, relations: ["providers"] });
-
-    if (!user) {
-        throw new Error(`User with id ${userId} not found`);
-    }
 
     const providers = await providerRepo.find({ where: { provider_id: In(providerIds) } });
 
     if (providers.length !== providerIds.length) {
-        throw new Error(`Some providers not found`);
+        throw new Error(`Some providers not found`); //TODO : Ne pas rejeter l'erreur tout de suite, d'abord demander à TMDB pour le fournisseur
     }
 
     user.providers = providers;
@@ -61,9 +51,9 @@ export async function saveUserProviders(userId: number, providerIds: number[]) {
 }
 
 /**
- * Fetch a user with their providers by user ID
+ * Fetch the providers of the user
  */
-export async function getUserWithProviders(userId: number) {
+export async function getUserProviders(userId: number) {
     const userRepo = AppDataSource.getRepository(User);
     const userWithProviders = await userRepo.findOne({ where: { id: userId }, relations: ["providers"] });
 

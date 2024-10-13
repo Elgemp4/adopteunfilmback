@@ -10,9 +10,6 @@ const sampleProviders = [
 
 async function testSaveIfNoExistsProvider() {
     try {
-        // Initialize the data source
-        await AppDataSource.initialize();
-
         // Call the function with sample data
         const newProviders = await saveIfNoExistsProvider(sampleProviders);
 
@@ -20,9 +17,6 @@ async function testSaveIfNoExistsProvider() {
         console.log('New providers saved:', newProviders);
     } catch (error) {
         console.error('Error testing saveIfNoExistsProvider:', error);
-    } finally {
-        // Destroy the data source to close the connection
-        await AppDataSource.destroy();
     }
 }
 

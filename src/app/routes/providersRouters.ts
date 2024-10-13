@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { body } from "express-validator";
-import {addUserProviders, getAllProviders, getUserProviders} from "../controllers/providersController.js";
+import {addUserProviders, getAllProviders, getUserPersonalProviders} from "../controllers/providersController.js";
 import forceValidation from "../middleware/validate.js";
 import validate from "../middleware/validate.js";
 import authenticate from "../middleware/authenticate.js";
@@ -18,7 +18,7 @@ providerRouter.get("/global",
 
 providerRouter.get("/personal",
     authenticate,
-    getUserProviders
+    getUserPersonalProviders
 )
 
 providerRouter.post("/personal",
