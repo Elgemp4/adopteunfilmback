@@ -3,8 +3,8 @@ import { User } from "./User.js";
 
 @Entity()
 export class Provider{
-    @ManyToMany("User")
-    user: User
+    @ManyToMany(() => User, user => user.providers)
+    users: User[];
 
     @PrimaryColumn()
     provider_id: number;

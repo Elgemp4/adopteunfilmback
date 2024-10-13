@@ -1,0 +1,13 @@
+### GET request to get all providers
+GET http://localhost:3500/providers/global
+Content-Type: application/json
+
+{
+  "language": "fr-FR",
+  "region": "BE"
+}
+
+### GET request to get user providers
+GET http://localhost:3500/providers/personal
+Authorization: Bearer 1bd4e66f6456d4e39c8a7ae08b9485be14700d3ddc1918befad349fb57fdf3857faededfff46afd2787ad7ee8be5f655
+Content-Type: application/json
