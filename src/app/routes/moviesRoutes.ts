@@ -8,9 +8,6 @@ const movieRouter = Router();
 
 movieRouter.get("/",
     authenticate,
-    validate([
-        body("page").isNumeric().escape(),
-    ]),
     suggestMoviesController
 );
 
