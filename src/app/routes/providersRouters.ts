@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { body } from "express-validator";
-import { getAllProviders, getUserProviders } from "../controllers/providersController.js";
+import {addUserProviders, getAllProviders, getUserPersonalProviders} from "../controllers/providersController.js";
 import forceValidation from "../middleware/validate.js";
 import validate from "../middleware/validate.js";
 import authenticate from "../middleware/authenticate.js";
@@ -18,11 +18,26 @@ providerRouter.get("/global",
 
 providerRouter.get("/personal",
     authenticate,
-    getUserProviders
+    getUserPersonalProviders
 )
 
 providerRouter.post("/personal",
+    authenticate,
+    validate([
+        body('providers')
+        .isArray({min: 1})
+        .custom((ids : Array<any>) => {
+            ids.forEach((value) => {
+                if(!Number.isInteger(value))
+                { 
+                    throw new Error("providerId should be an array of int")
+                }
+            });
 
+            return true
+        }).escape(),    
+    ]),
+    addUserProviders
 );
 
 export default providerRouter;

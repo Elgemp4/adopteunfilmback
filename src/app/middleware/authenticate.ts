@@ -35,8 +35,6 @@ const authenticate : Middleware = async (req, res, next) => {
 
     const user = matchingToken.user;
 
-    const foundUser = await userRepo.findOneBy({id: 1});
-
     req.body["user"] = user;
 
     next();
