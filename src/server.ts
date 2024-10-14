@@ -2,8 +2,8 @@ import app from './app/index.js'
 import 'dotenv/config'
 
 import AppDataSource from './app/data-source.js'
-import { saveGenreIfNotExist } from './app/services/orm/genreORM.js'
-import { getGenres } from './app/services/fetcher/genresFetcher.js'
+import { saveGenreIfNotExist } from './app/services/store/genreStore.js'
+import { getGenres } from './app/services/provider/genresProvider.js'
 
 
 const port = process.env.SERVER_PORT || '3500'

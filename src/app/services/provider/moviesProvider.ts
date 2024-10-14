@@ -2,7 +2,7 @@ import axios from "axios";
 import "dotenv/config"
 import headers from "./tmdbApi.js";
 import { User } from "../../entity/User.js";
-import { getUserReview, saveMovieIfNotExists } from "../orm/movieORM.js";
+import { getUserReview, saveMovieIfNotExists } from "../store/movieStore.js";
 import tmdbApi from "./tmdbApi.js";
 
 

@@ -1,5 +1,5 @@
-import { getProviders } from '../app/services/fetcher/providersFetcher.js';
-import { saveIfNoExistsProvider } from '../app/services/orm/providerORM.js';
+import { getProviders } from '../app/services/provider/providersProvider.js';
+import { saveIfNoExistsProvider } from '../app/services/store/providerStore.js';
 import AppDataSource from '../app/data-source.js';
 
 async function testFetchAndSaveProviders() {

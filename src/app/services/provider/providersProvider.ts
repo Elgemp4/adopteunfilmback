@@ -1,6 +1,4 @@
-import axios from "axios";
 import "dotenv/config"
-import headers from "./tmdbApi.js";
 import tmdbApi from "./tmdbApi.js";
 
 

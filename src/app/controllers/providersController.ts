@@ -1,7 +1,7 @@
-import { matchedData, validationResult } from "express-validator";
-import { getProviders } from "../services/fetcher/providersFetcher.js";
+import { matchedData } from "express-validator";
+import { getProviders } from "../services/provider/providersProvider.js";
 import { RequestHandler } from "express";
-import {getUserProviders, saveIfNoExistsProvider, saveUserProviders} from "../services/orm/providerORM.js";
+import {getUserProviders, saveIfNoExistsProvider, saveUserProviders} from "../services/store/providerStore.js";
 
 export const getAllProviders :RequestHandler = async (req, res) => {
     const {region, language} = matchedData(req);

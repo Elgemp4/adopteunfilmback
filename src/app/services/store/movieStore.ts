@@ -1,5 +1,5 @@
-import { raw } from "express";
 import AppDataSource from "../../data-source.js";
+import Genre from "../../entity/Genre.js";
 import Movie from "../../entity/Movie.js";
 import MovieReview from "../../entity/MovieReview.js";
 
@@ -28,6 +28,7 @@ export async function getMovie(movieId){
 
 export async function saveMovieIfNotExists(rawMovie){
     const movieRepo = AppDataSource.getRepository(Movie);
+    const genreRepo = AppDataSource.getRepository(Genre);
 
     const existingMovie = await getMovie(rawMovie.id)
     if(existingMovie != undefined)
@@ -42,6 +43,11 @@ export async function saveMovieIfNotExists(rawMovie){
     movie.description = rawMovie.overview;
     movie.poster_path = rawMovie.poster_path;
     movie.vote_avg = rawMovie.vote_average;
+    console.log(rawMovie.genre);
+    for(const genreId of rawMovie.genre){
+        const genre = await genreRepo.findOneBy({id: genreId});
+        movie.genre_ids.push(genre);
+    }
 
     movieRepo.save(movie);
 
