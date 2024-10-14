@@ -17,14 +17,14 @@ export const getUserPersonalProviders : RequestHandler = async (req, res) => {
     try {
         const user = req.body.user;
 
-        const userWithProviders = await getUserProviders(user.id);
+        const providers = await getUserProviders(user.id);
 
-        if (!userWithProviders) {
+        if (!providers) {
             res.status(404).json({ error: "User not found" });
             return;
         }
 
-        res.json({ providers: userWithProviders.providers });
+        res.json({ providers });
     } catch (error) {
         res.status(400).json({ message: error.message });
     }

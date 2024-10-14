@@ -61,5 +61,5 @@ export async function getUserProviders(userId: number) {
         throw new Error("User not found");
     }
 
-    return userWithProviders;
+    return userWithProviders.providers;
 }
