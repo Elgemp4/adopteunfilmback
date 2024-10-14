@@ -1,4 +1,4 @@
-import { saveIfNoExistsProvider } from "../app/services/orm/providerORM.js";
+import { saveIfNoExistsProvider } from "../app/services/store/providerStore.js";
 import AppDataSource from "../app/data-source.js";
 
 // Sample provider data

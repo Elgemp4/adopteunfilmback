@@ -1,6 +1,6 @@
 import {Provider} from "../../entity/Provider.js";
 import AppDataSource from "../../data-source.js";
-import {getProviders} from "../fetcher/providersFetcher";
+import {getProviders} from "../provider/providersProvider.js";
 import {User} from "../../entity/User.js";
 import {In} from "typeorm";
 

@@ -1,4 +1,4 @@
-import { saveUserProviders } from '../app/services/orm/providerORM.js';
+import { saveUserProviders } from '../app/services/store/providerStore.js';
 import AppDataSource from '../app/data-source.js';
 /*
 async function testSaveUserProviders() {

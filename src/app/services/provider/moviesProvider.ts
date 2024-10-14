@@ -1,8 +1,9 @@
 import axios from "axios";
 import "dotenv/config"
-import headers from "./headers.js";
+import headers from "./tmdbApi.js";
 import { User } from "../../entity/User.js";
-import { getUserReview, saveMovieIfNotExists } from "../orm/movieORM.js";
+import { getUserReview, saveMovieIfNotExists } from "../store/movieStore.js";
+import tmdbApi from "./tmdbApi.js";
 
 
 const url = `${process.env.TMDB_URL}/discover/movie`;
@@ -39,9 +40,8 @@ async function getPage(page: Number, watchProviders){
         sort_by: "popularity.desc"
     }
 
-    const result = await axios.get(url, {
-        params,
-        headers
+    const result = await tmdbApi.get("/discover/movie", {
+        params
     });
 
     return result.data;

@@ -1,11 +1,9 @@
 import 'dotenv/config'
-import { suggestMovies } from "../services/fetcher/moviesFetcher.js";
-import { matchedData, validationResult } from 'express-validator';
+import { suggestMovies } from "../services/provider/moviesProvider.js";
+import { matchedData } from 'express-validator';
 import { RequestHandler } from 'express';
-import { User } from '../entity/User.js';
-import AppDataSource from '../data-source.js';
-import { getUserProviders } from '../services/orm/providerORM.js';
-import { evaluateMovie } from '../services/orm/movieORM.js';
+import { getUserProviders } from '../services/store/providerStore.js';
+import { evaluateMovie } from '../services/store/movieStore.js';
 
 export const suggestMoviesController : RequestHandler = async (req, res) => {
   const userId = req.body.user.id;

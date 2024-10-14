@@ -1,6 +1,5 @@
-import axios from "axios";
 import "dotenv/config"
-import headers from "./headers.js";
+import tmdbApi from "./tmdbApi.js";
 
 
 const url = `${process.env.TMDB_URL}/watch/providers/movie`;
@@ -11,9 +10,8 @@ export async function getProviders(language: string, watch_region: string){
         watch_region
     }
 
-    const result = await axios.get(url, {
-        params,
-        headers
+    const result = await tmdbApi.get("/watch/providers/movie", {
+        params
     });
 
     const providers = result.data.results;
