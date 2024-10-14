@@ -8,8 +8,4 @@ export default class Genre{
 
     @Column()
     name: string
-
-    @ManyToMany("Genre", "genres")
-    movies: Movie[]
-
 }

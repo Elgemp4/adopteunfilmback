@@ -28,13 +28,22 @@ export async function getMovie(movieId){
 
 export async function saveMovieIfNotExists(rawMovie){
     const movieRepo = AppDataSource.getRepository(Movie);
-    const genreRepo = AppDataSource.getRepository(Genre);
 
     const existingMovie = await getMovie(rawMovie.id)
     if(existingMovie != undefined)
     {
         return existingMovie;
     }
+
+    const movie = await createMovieFromRaw(rawMovie);
+
+    movieRepo.save(movie);
+
+    return movie;
+}
+
+async function createMovieFromRaw(rawMovie){
+    const genreRepo = AppDataSource.getRepository(Genre);
 
     const movie = new Movie();
     movie.id = rawMovie.id;
@@ -43,13 +52,12 @@ export async function saveMovieIfNotExists(rawMovie){
     movie.description = rawMovie.overview;
     movie.poster_path = rawMovie.poster_path;
     movie.vote_avg = rawMovie.vote_average;
-    console.log(rawMovie.genre);
-    for(const genreId of rawMovie.genre){
-        const genre = await genreRepo.findOneBy({id: genreId});
-        movie.genre_ids.push(genre);
-    }
 
-    movieRepo.save(movie);
+    movie.genres = [];
+    for(const genreId of rawMovie.genre_ids){
+        const genre = await genreRepo.findOneBy({id: genreId});
+        movie.genres.push(genre);
+    }
 
     return movie;
 }

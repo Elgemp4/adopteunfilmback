@@ -1,5 +1,5 @@
-import { Column, Entity, ManyToMany, PrimaryColumn } from "typeorm";
-import Genre from "./Genre";
+import { Column, Entity, JoinTable, ManyToMany, PrimaryColumn } from "typeorm";
+import Genre from "./Genre.js";
 
 @Entity()
 export default class Movie{
@@ -21,6 +21,7 @@ export default class Movie{
     @Column()
     vote_avg: Number
 
-    @ManyToMany("Genre", "movies")
-    genre_ids: Genre[]
+    @ManyToMany(() => Genre)
+    @JoinTable()
+    genres: Genre[]
 }
