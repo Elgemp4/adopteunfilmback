@@ -1,4 +1,5 @@
-import { Column, Entity, PrimaryColumn } from "typeorm";
+import { Column, Entity, ManyToMany, PrimaryColumn } from "typeorm";
+import Movie from "./Movie";
 
 @Entity()
 export default class Genre{
@@ -7,4 +8,8 @@ export default class Genre{
 
     @Column()
     name: string
+
+    @ManyToMany("Genre", "genres")
+    movies: Movie[]
+
 }

@@ -2,10 +2,20 @@ import app from './app/index.js'
 import 'dotenv/config'
 
 import AppDataSource from './app/data-source.js'
-import { getGenre, saveGenreIfNotExist } from './app/services/orm/genreORM.js'
+import { saveGenreIfNotExist } from './app/services/orm/genreORM.js'
 import { getGenres } from './app/services/fetcher/genresFetcher.js'
 
+
 const port = process.env.SERVER_PORT || '3500'
+
+const requiredEnv = ["TMDB_URL", "TMDB_TOKEN", "DB_TYPE"]
+
+for(const env of requiredEnv){
+    if(process.env[env] == undefined){
+        throw new Error(`Missing ${env} from .env file !`);
+    }
+}
+
 
 AppDataSource.initialize()
     .then(async () => {

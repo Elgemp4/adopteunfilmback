@@ -3,11 +3,9 @@ import {
     BeforeUpdate,
     Column,
     Entity,
-    JoinColumn,
     JoinTable,
     ManyToMany,
     OneToMany,
-    OneToOne,
     PrimaryGeneratedColumn
 } from "typeorm";
 import UserToken from "./UserToken.js";
