@@ -30,6 +30,7 @@ export async function saveMovieIfNotExists(rawMovie){
     const movieRepo = AppDataSource.getRepository(Movie);
 
     const existingMovie = await getMovie(rawMovie.id)
+    
     if(existingMovie != undefined)
     {
         return existingMovie;
