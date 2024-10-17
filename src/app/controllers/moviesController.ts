@@ -9,12 +9,10 @@ export const suggestMoviesController : RequestHandler = async (req, res) => {
   const userId = req.body.user.id;
 
   const providerIds : number[] = (await getUserProviders(userId)).map((provider) => provider.provider_id);
-
+  
   const result = await suggestMovies(userId, providerIds);
 
-  for(const movie of result){
-    movie.poster_path = `https://image.tmdb.org/t/p/w500/${movie.poster_path}`
-  }
+  result.forEach((movie) => movie.poster_path = process.env.IMAGE_URL + movie.poster_path)
   res.json(result);
 }
 
