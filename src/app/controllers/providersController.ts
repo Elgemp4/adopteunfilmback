@@ -1,7 +1,7 @@
 import { matchedData } from "express-validator";
 import { getProviders } from "../services/provider/providersProvider.js";
 import { RequestHandler } from "express";
-import {getUserProviders, saveIfNoExistsProvider, saveUserProviders} from "../services/store/providerStore.js";
+import {getUserProviders, saveIfNoExistsProvider, saveUserProviders, getAllProvidersFromDB} from "../services/store/providerStore.js";
 
 export const getAllProviders :RequestHandler = async (req, res) => {
     const {region, language} = matchedData(req);
@@ -38,6 +38,17 @@ export const addUserProviders : RequestHandler = async (req, res) => {
         const userWithProviders = await saveUserProviders(user, providerIds);
 
         res.json({ providers: userWithProviders.providers });
+    } catch (error) {
+        res.status(400).json({ message: error.message });
+    }
+}
+
+export const addProvidersToInterface : RequestHandler = async (req, res) => {
+
+    try {
+        const providers = await getAllProvidersFromDB();
+
+        res.json({ providers });
     } catch (error) {
         res.status(400).json({ message: error.message });
     }

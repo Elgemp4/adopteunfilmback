@@ -7,6 +7,9 @@ import authenticate from "../middleware/authenticate.js";
 
 const providerRouter = Router();
 
+providerRouter.get("/",
+    getAllProviders
+)
 
 providerRouter.get("/global", 
     validate([
