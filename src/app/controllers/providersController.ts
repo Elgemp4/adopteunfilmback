@@ -26,7 +26,7 @@ export const getUserPersonalProviders : RequestHandler = async (req, res) => {
 
         res.json({ providers });
     } catch (error) {
-        res.status(400).json({ message: error.message });
+        res.status(500).json({ message: error.message });
     }
 }
 
@@ -39,6 +39,6 @@ export const addUserProviders : RequestHandler = async (req, res) => {
 
         res.json({ providers: userWithProviders.providers });
     } catch (error) {
-        res.status(400).json({ message: error.message });
+        res.status(500).json({ message: error.message });
     }
 }

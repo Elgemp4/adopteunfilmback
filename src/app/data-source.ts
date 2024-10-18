@@ -19,7 +19,7 @@ const AppDataSource = new DataSource({
     database: "test.db",
     entities: [User, UserToken, Provider, Movie, MovieReview, Genre],
     synchronize: true,
-    logging: false,
+    logging: true,
 })
 
 export default AppDataSource;
