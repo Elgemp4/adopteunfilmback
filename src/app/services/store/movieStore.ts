@@ -40,9 +40,7 @@ export async function saveMovieIfNotExists(rawMovie){
 
         const movie = await createMovieFromRaw(rawMovie, transaction);
 
-        console.log("finiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii")
         await movieRepo.save(movie);
-        console.log("biitteeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee")
         return movie;
     })
     
