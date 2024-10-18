@@ -44,14 +44,16 @@ export async function saveMovieIfNotExists(rawMovie){
 
 async function createMovieFromRaw(rawMovie){
     const genreRepo = AppDataSource.getRepository(Genre);
+    const movieRepo = AppDataSource.getRepository(Movie);
 
-    const movie = new Movie();
-    movie.id = rawMovie.id;
-    movie.adult = rawMovie.adult;
-    movie.title = rawMovie.title;
-    movie.description = rawMovie.overview;
-    movie.poster_path = rawMovie.poster_path;
-    movie.vote_avg = rawMovie.vote_average;
+    const movie = movieRepo.create({
+        id: rawMovie.id,
+        adult: rawMovie.adult,
+        title: rawMovie.title,
+        description: rawMovie.overview,
+        poster_path: rawMovie.poster_path
+        ,vote_avg: rawMovie.vote_average
+    });
 
     movie.genres = [];
     for(const genreId of rawMovie.genre_ids){
