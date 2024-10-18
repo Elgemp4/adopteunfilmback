@@ -1,3 +1,4 @@
+import { EntityManager } from "typeorm";
 import AppDataSource from "../../data-source.js";
 import Genre from "../../entity/Genre.js";
 import Movie from "../../entity/Movie.js";
@@ -16,35 +17,41 @@ export async function getUserReview(userId, movieId){
     return review;
 }
 
-export async function getMovie(movieId){
-    const movieRepo = AppDataSource.getRepository(Movie);
+
+export async function getMovie(movieId, entityManager : EntityManager = AppDataSource.manager){
+    const movieRepo = entityManager.getRepository(Movie);
 
     return await movieRepo.findOne({
         where: {
             id: movieId
-        }
+        },
+        lock:{mode: "pessimistic_write"} 
     })
 }
 
 export async function saveMovieIfNotExists(rawMovie){
-    const movieRepo = AppDataSource.getRepository(Movie);
+    return await AppDataSource.transaction("SERIALIZABLE", async (transaction ) => {
+        const movieRepo = transaction.getRepository(Movie);
 
-    const existingMovie = await getMovie(rawMovie.id)
-    if(existingMovie != undefined)
-    {
-        return existingMovie;
-    }
+        const existingMovie = await getMovie(rawMovie.id, transaction)
+        if(existingMovie != undefined)
+        {
+            return existingMovie;
+        }
 
-    const movie = await createMovieFromRaw(rawMovie);
+        const movie = await createMovieFromRaw(rawMovie, transaction);
 
-    movieRepo.save(movie);
-
-    return movie;
+        console.log("finiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii")
+        await movieRepo.save(movie);
+        console.log("biitteeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee")
+        return movie;
+    })
+    
 }
 
-async function createMovieFromRaw(rawMovie){
-    const genreRepo = AppDataSource.getRepository(Genre);
-    const movieRepo = AppDataSource.getRepository(Movie);
+async function createMovieFromRaw(rawMovie, entityManager : EntityManager = AppDataSource.manager){
+    const genreRepo = entityManager.getRepository(Genre);
+    const movieRepo = entityManager.getRepository(Movie);
 
     const movie = movieRepo.create({
         id: rawMovie.id,
@@ -60,7 +67,7 @@ async function createMovieFromRaw(rawMovie){
         const genre = await genreRepo.findOneBy({id: genreId});
         movie.genres.push(genre);
     }
-
+    
     return movie;
 }
 

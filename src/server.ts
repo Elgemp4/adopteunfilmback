@@ -19,6 +19,8 @@ for(const env of requiredEnv){
 
 AppDataSource.initialize()
     .then(async () => {
+        
+        await AppDataSource.synchronize();
         console.log("Connected to database");
 
         const genres = await getGenres();

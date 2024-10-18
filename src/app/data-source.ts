@@ -15,8 +15,12 @@ import { Provider } from "./entity/Provider.js";
     password: "admin",
     database: "test",*/
 const AppDataSource = new DataSource({
-    type: "sqlite",
-    database: "test.db",
+    type: "mariadb",
+    host: process.env.DB_HOST,
+    port: Number.parseInt(process.env.DB_PORT),
+    username: process.env.DB_USER,
+    password: process.env.DB_PASS,
+    database: process.env.DB_NAME,
     entities: [User, UserToken, Provider, Movie, MovieReview, Genre],
     synchronize: true,
     logging: true,
