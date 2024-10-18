@@ -32,7 +32,6 @@ export async function getMovie(movieId, entityManager : EntityManager = AppDataS
 export async function saveMovieIfNotExists(rawMovie){
     return await AppDataSource.transaction("SERIALIZABLE", async (transaction ) => {
         const movieRepo = transaction.getRepository(Movie);
-
         const existingMovie = await getMovie(rawMovie.id, transaction)
         if(existingMovie != undefined)
         {
