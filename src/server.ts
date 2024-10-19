@@ -8,7 +8,7 @@ import { getGenres } from './app/services/provider/genresProvider.js'
 
 const port = process.env.SERVER_PORT || '3500'
 
-const requiredEnv = ["TMDB_URL", "TMDB_TOKEN", "DB_TYPE"]
+const requiredEnv = ["TMDB_URL", "TMDB_TOKEN"]
 
 for(const env of requiredEnv){
     if(process.env[env] == undefined){
@@ -19,6 +19,8 @@ for(const env of requiredEnv){
 
 AppDataSource.initialize()
     .then(async () => {
+        
+        await AppDataSource.synchronize();
         console.log("Connected to database");
 
         const genres = await getGenres();

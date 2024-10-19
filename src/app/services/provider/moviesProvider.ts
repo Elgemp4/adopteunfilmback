@@ -9,9 +9,9 @@ export async function suggestMovies(userId: number, providerIds: number[]){
     const unreviewedMovies = [];
     let page = 1;
 
-    while(unreviewedMovies.length < 10){
+    while(true){
         const suggestedMovies = await getPage(page, providerIds);
-
+        
         for(const movie of suggestedMovies.results){
             const review = await getUserReview(userId, movie.id);
             if(review == undefined){
