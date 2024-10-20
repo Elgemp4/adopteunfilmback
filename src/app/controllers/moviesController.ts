@@ -8,14 +8,21 @@ import { evaluateMovie } from '../services/store/movieStore.js';
 export const suggestMoviesController : RequestHandler = async (req, res) => {
   const userId = req.body.user.id;
 
-  const providerIds : number[] = (await getUserProviders(userId)).map((provider) => provider.provider_id);
-
-  const result = await suggestMovies(userId, providerIds);
-
-  for(const movie of result){
-    movie.poster_path = `https://image.tmdb.org/t/p/w500/${movie.poster_path}`
+  try{
+    const providerIds : number[] = (await getUserProviders(userId)).map((provider) => provider.provider_id);
+    
+    const result = await suggestMovies(userId, providerIds);
+    console.log(result)
+    
+    for(const movie of result){
+      movie.poster_path = `https://image.tmdb.org/t/p/w500/${movie.poster_path}`
+    }
+    res.json(result);
+  } 
+  catch(error){
+    console.log(error)
+    res.status(500).json(error);
   }
-  res.json(result);
 }
 
 export const evaluateMovieController : RequestHandler = async (req, res) => {
@@ -23,7 +30,13 @@ export const evaluateMovieController : RequestHandler = async (req, res) => {
   
   const userId = req.body.user.id;
 
-  await evaluateMovie(userId, movieId, appreciate, seen);
+  try{
+    await evaluateMovie(userId, movieId, appreciate, seen);
 
-  res.status(200).send();
+    res.status(200).send();
+  }
+  catch(error){
+    res.status(500).json({message: error})
+  }
+  
 }

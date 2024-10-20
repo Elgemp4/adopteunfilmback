@@ -26,25 +26,29 @@ export const login : RequestHandler = async (req, res) => {
         });
     }
     catch(error){
-        res.status(400).json({message: error.message})
+        res.status(500).json({message: error.message})
     }
 }
 
 export const register : RequestHandler = async (req, res) => {
     const {email, password, firstname, lastname, birthdate} = matchedData(req);
-
-    const newUser = await createUser(firstname, lastname, email, password, birthdate)
+    try{
+        const newUser = await createUser(firstname, lastname, email, password, birthdate)
     
-    const newToken = await createToken(newUser);
+        const newToken = await createToken(newUser);
 
-    res.json({
-        user: {
-            id: newUser.id,
-            firstName: newUser.firstName,
-            lastName: newUser.lastName,
-            email: newUser.email,
-            birthDate: newUser.birthDate
-        },
-        token: newToken.token
-    });
+        res.json({
+            user: {
+                id: newUser.id,
+                firstName: newUser.firstName,
+                lastName: newUser.lastName,
+                email: newUser.email,
+                birthDate: newUser.birthDate
+            },
+            token: newToken.token
+        });
+    }catch(error){
+        res.status(500).json({message: error})
+    }
+    
 }
