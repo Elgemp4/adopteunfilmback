@@ -48,8 +48,12 @@ export const addProvidersToInterface : RequestHandler = async (req, res) => {
     try {
         const providers = await getAllProvidersFromDB();
 
+        for (const provider of providers) {
+            provider.logo_path = `https://image.tmdb.org/t/p/w500/${provider.logo_path}`;
+        }
         res.json({ providers });
     } catch (error) {
-        res.status(400).json({ message: error.message });
+        console.log(error);
+        res.status(500).json({ message: error.message });
     }
 }

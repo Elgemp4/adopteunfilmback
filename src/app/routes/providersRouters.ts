@@ -1,6 +1,11 @@
 import { Router } from "express";
 import { body } from "express-validator";
-import {addUserProviders, getAllProviders, getUserPersonalProviders} from "../controllers/providersController.js";
+import {
+    addProvidersToInterface,
+    addUserProviders,
+    getAllProviders,
+    getUserPersonalProviders
+} from "../controllers/providersController.js";
 import forceValidation from "../middleware/validate.js";
 import validate from "../middleware/validate.js";
 import authenticate from "../middleware/authenticate.js";
@@ -8,7 +13,8 @@ import authenticate from "../middleware/authenticate.js";
 const providerRouter = Router();
 
 providerRouter.get("/",
-    getAllProviders
+    authenticate,
+    addProvidersToInterface
 )
 
 providerRouter.get("/global", 

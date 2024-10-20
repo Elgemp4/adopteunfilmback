@@ -20,3 +20,8 @@ Content-Type: application/json
 {
   "providerId": [283]
 }
+
+### GET request to get all providers
+GET http://localhost:3500/providers
+Authorization: Bearer a9fa45ca810d25bf2ffb2b62aaca4dce663e1013642d5e173b6922ed75a0210aa148e68a55ee6a1a840ed87ea8d1848b
+Content-Type: application/json
