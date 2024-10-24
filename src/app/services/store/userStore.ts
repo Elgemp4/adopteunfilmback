@@ -1,17 +1,48 @@
 import AppDataSource from "../../data-source.js";
 import { User } from "../../entity/User.js";
 import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
 import UserToken from "../../entity/UserToken.js";
 
 
 export async function createToken(user : User) {
-    const token = new UserToken();
+    const token = jwt.sign({
+        userId: user.id,
+    }, "test123", {expiresIn: "1h"})
 
-    token.user = user;
+    return token;
+}
+
+export async function createRefreshToken(user: User) {
+    const refreshToken = new UserToken();
+
+    const token = jwt.sign({
+        userId: user.id,
+    }, "test123", {expiresIn: "1h"})
+
+    refreshToken.user = user;
+    refreshToken.token = token;
 
     const userTokenRepo = AppDataSource.getRepository(UserToken);
 
-    return await userTokenRepo.save(token);
+    return await userTokenRepo.save(refreshToken);
+}
+
+export async function checkRenewToken(token : string) {
+    console.log("Token : ", token);
+    try{
+        const decodedToken : any  = jwt.verify(token, "test123");
+
+        console.log("Decoded : ", decodedToken);
+
+        const userRepo = AppDataSource.getRepository(User);
+        const user = await userRepo.findOneBy({id: decodedToken.userId})
+        return user;
+    }
+    catch(Error){
+        console.log("invalid token !")
+        return null;
+    }
 }
 
 export async function tryLogin(email: string, password : string){

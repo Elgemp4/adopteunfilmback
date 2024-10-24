@@ -1,29 +1,17 @@
 
-import { RequestHandler } from "express";
-import { createToken, createUser, tryLogin } from "../services/store/userStore.js";
+import { RequestHandler, Response } from "express";
+import { checkRenewToken as checkRefreshToken, createRefreshToken, createToken, createUser, tryLogin } from "../services/store/userStore.js";
 import { matchedData} from "express-validator";
-
-
-
+import { User } from "../entity/User.js";
 
 export const login : RequestHandler = async (req, res) => {
     const {email, password} = matchedData(req);
-    
+
     try{
         const user = await tryLogin(email, password);
 
-        const newToken = await createToken(user);
-
-        res.json({
-            user: {
-                id: user.id,
-                firstName: user.firstName,
-                lastName: user.lastName,
-                email: user.email,
-                birthDate: user.birthDate
-            },
-            token: newToken.token
-        });
+        setRefreshTokenCookie(user, res);
+        sendToken(user, res);
     }
     catch(error){
         res.status(500).json({message: error.message})
@@ -35,20 +23,54 @@ export const register : RequestHandler = async (req, res) => {
     try{
         const newUser = await createUser(firstname, lastname, email, password, birthdate)
     
-        const newToken = await createToken(newUser);
+        sendToken(newUser, res);
+    }catch(error){
+        res.status(500).json({message: error})
+    }   
+}
+
+export const renewToken : RequestHandler = async (req, res) => {
+    const refreshToken = req.cookies.refreshToken;
+
+    if(refreshToken == undefined){
+        res.status(400).json({"message": "Renew token should be provided"});
+        return;
+    }
+
+    const user = await checkRefreshToken(refreshToken);
+
+    if(user == undefined){
+        res.status(400).json({"message": "Bad renew token"});
+        return;
+    }
+
+    sendToken(user, res);    
+}
+
+
+const setRefreshTokenCookie = async (user: User, res: Response) => {
+    const refreshToken = await createRefreshToken(user);
+
+    res.cookie("refreshToken", refreshToken.token, {
+        httpOnly: true,
+        domain: "localhost",
+        maxAge: 20 * 86400000, //20 jours
+        path: "/renew"
+    })
+}
+
+
+const sendToken = async (user: User, res : Response) => {
+        const token = await createToken(user);        
 
         res.json({
             user: {
-                id: newUser.id,
-                firstName: newUser.firstName,
-                lastName: newUser.lastName,
-                email: newUser.email,
-                birthDate: newUser.birthDate
+                id: user.id,
+                firstName: user.firstName,
+                lastName: user.lastName,
+                email: user.email,
+                birthDate: user.birthDate
             },
-            token: newToken.token
+            token: token
         });
-    }catch(error){
-        res.status(500).json({message: error})
-    }
-    
 }

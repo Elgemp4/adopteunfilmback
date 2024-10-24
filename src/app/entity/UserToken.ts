@@ -21,14 +21,6 @@ export default class UserToken{
     expendExpiration(){
         this.expirationDate = new Date(new Date().getTime() + 30 * msPerMinute);
     }
-
-    @BeforeInsert()
-    generateToken(){
-        const bytes = crypto.randomBytes(48);
-
-
-        this.token = bytes.toString("hex"); 
-    }
     
     @ManyToOne('User', 'tokens')
     @JoinColumn({ name: 'userId' })
