@@ -63,3 +63,13 @@ export async function getUserProviders(userId: number) {
 
     return userWithProviders.providers;
 }
+
+/**
+ * Fetch all providers
+ */
+export async function getSavedProviders() {
+    const providerRepo = AppDataSource.getRepository(Provider);
+    const providers = await providerRepo.find();
+
+    return providers;
+}
