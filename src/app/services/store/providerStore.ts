@@ -67,7 +67,7 @@ export async function getUserProviders(userId: number) {
 /**
  * Fetch all providers
  */
-export async function getAllProvidersFromDB() {
+export async function getSavedProviders() {
     const providerRepo = AppDataSource.getRepository(Provider);
     const providers = await providerRepo.find();
 

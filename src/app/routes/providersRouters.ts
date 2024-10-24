@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { body } from "express-validator";
 import {
-    addProvidersToInterface,
+    sendProviders,
     addUserProviders,
     getAllProviders,
     getUserPersonalProviders
@@ -14,7 +14,7 @@ const providerRouter = Router();
 
 providerRouter.get("/",
     authenticate,
-    addProvidersToInterface
+    sendProviders
 )
 
 providerRouter.get("/global", 

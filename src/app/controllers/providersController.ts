@@ -1,7 +1,7 @@
 import { matchedData } from "express-validator";
 import { getProviders } from "../services/provider/providersProvider.js";
 import { RequestHandler } from "express";
-import {getUserProviders, saveIfNoExistsProvider, saveUserProviders, getAllProvidersFromDB} from "../services/store/providerStore.js";
+import {getUserProviders, saveIfNoExistsProvider, saveUserProviders, getSavedProviders} from "../services/store/providerStore.js";
 
 export const getAllProviders :RequestHandler = async (req, res) => {
     const {region, language} = matchedData(req);
@@ -43,10 +43,10 @@ export const addUserProviders : RequestHandler = async (req, res) => {
     }
 }
 
-export const addProvidersToInterface : RequestHandler = async (req, res) => {
+export const sendProviders : RequestHandler = async (req, res) => {
 
     try {
-        const providers = await getAllProvidersFromDB();
+        const providers = await getSavedProviders();
 
         for (const provider of providers) {
             provider.logo_path = `https://image.tmdb.org/t/p/w500/${provider.logo_path}`;
