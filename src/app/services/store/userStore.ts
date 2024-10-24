@@ -29,20 +29,11 @@ export async function createRefreshToken(user: User) {
 }
 
 export async function checkRenewToken(token : string) {
-    console.log("Token : ", token);
-    try{
-        const decodedToken : any  = jwt.verify(token, "test123");
+    const decodedToken : any  = jwt.verify(token, "test123");
 
-        console.log("Decoded : ", decodedToken);
-
-        const userRepo = AppDataSource.getRepository(User);
-        const user = await userRepo.findOneBy({id: decodedToken.userId})
-        return user;
-    }
-    catch(Error){
-        console.log("invalid token !")
-        return null;
-    }
+    const userRepo = AppDataSource.getRepository(User);
+    const user = await userRepo.findOneBy({id: decodedToken.userId})
+    return user;
 }
 
 export async function tryLogin(email: string, password : string){

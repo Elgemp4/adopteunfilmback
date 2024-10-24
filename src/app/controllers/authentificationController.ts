@@ -32,19 +32,14 @@ export const register : RequestHandler = async (req, res) => {
 export const renewToken : RequestHandler = async (req, res) => {
     const refreshToken = req.cookies.refreshToken;
 
-    if(refreshToken == undefined){
-        res.status(400).json({"message": "Renew token should be provided"});
-        return;
+    try{
+        const user = await checkRefreshToken(refreshToken);
+
+        sendToken(user, res);    
     }
-
-    const user = await checkRefreshToken(refreshToken);
-
-    if(user == undefined){
+    catch(error){
         res.status(400).json({"message": "Bad renew token"});
-        return;
     }
-
-    sendToken(user, res);    
 }
 
 
