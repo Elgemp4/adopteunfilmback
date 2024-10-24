@@ -11,6 +11,7 @@ import {
 import UserToken from "./UserToken.js";
 import bcrypt from "bcrypt"
 import { Provider } from "./Provider.js";
+import {Group} from "./Group.js";
 
 @Entity()
 export class User{
@@ -50,4 +51,12 @@ export class User{
         inverseJoinColumn: { name: "provider_id", referencedColumnName: "provider_id" }
     })
     providers: Provider[];
+
+    @ManyToMany(() => Group)
+    @JoinTable({
+        name: "user_groups",
+        joinColumn: { name: "user_id", referencedColumnName: "id" },
+        inverseJoinColumn: { name: "group_id", referencedColumnName: "group_id" }
+    })
+    groups: Group[];
 }

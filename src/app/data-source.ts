@@ -6,6 +6,7 @@ import Movie from "./entity/Movie.js";
 import MovieReview from "./entity/MovieReview.js";
 import Genre from "./entity/Genre.js";
 import { Provider } from "./entity/Provider.js";
+import {Group} from "./entity/Group.js";
 
 
 /*type: "postgres",
@@ -21,7 +22,7 @@ const AppDataSource = new DataSource({
     username: process.env.DB_USER,
     password: process.env.DB_PASS,
     database: process.env.DB_NAME,
-    entities: [User, UserToken, Provider, Movie, MovieReview, Genre],
+    entities: [User, UserToken, Provider, Movie, MovieReview, Genre, Group],
     synchronize: true,
     logging: true,
 })
