@@ -10,8 +10,8 @@ export const login : RequestHandler = async (req, res) => {
     try{
         const user = await tryLogin(email, password);
 
-        setRefreshTokenCookie(user, res);
-        sendToken(user, res);
+        await setRefreshTokenCookie(user, res);
+        await sendToken(user, res);
     }
     catch(error){
         res.status(500).json({message: error.message})
@@ -23,7 +23,7 @@ export const register : RequestHandler = async (req, res) => {
     try{
         const newUser = await createUser(firstname, lastname, email, password, birthdate)
     
-        sendToken(newUser, res);
+        await sendToken(newUser, res);
     }catch(error){
         res.status(500).json({message: error})
     }   
