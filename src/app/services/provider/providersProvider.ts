@@ -2,8 +2,6 @@ import "dotenv/config"
 import tmdbApi from "./tmdbApi.js";
 
 
-const url = `${process.env.TMDB_URL}/watch/providers/movie`;
-
 export async function getProviders(language: string, watch_region: string){
     const params = {
         language,

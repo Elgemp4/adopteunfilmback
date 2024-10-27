@@ -29,21 +29,31 @@ export async function getMovie(movieId, entityManager : EntityManager = AppDataS
     })
 }
 
-export async function saveMovieIfNotExists(rawMovie){
-    return await AppDataSource.transaction("SERIALIZABLE", async (transaction ) => {
-        const movieRepo = transaction.getRepository(Movie);
-        const existingMovie = await getMovie(rawMovie.id, transaction)
-        if(existingMovie != undefined)
-        {
-            return existingMovie;
+async function saveMovieIfNotExists(rawMovie, entityManager : EntityManager){
+    
+    const movieRepo = entityManager.getRepository(Movie);
+    const existingMovie = await getMovie(rawMovie.id, entityManager)
+    if(existingMovie != undefined)
+    {
+        return existingMovie;
+    }
+
+    const movie = await createMovieFromRaw(rawMovie, entityManager);
+
+    await movieRepo.save(movie);
+    return movie;
+}
+
+export async function saveMoviesIfNotExists(rawMovies){
+    return await AppDataSource.transaction("READ COMMITTED", async (transaction ) => {
+        const movies = new Array<Movie>();
+
+        for(const rawMovie of rawMovies){
+            movies.push(await saveMovieIfNotExists(rawMovie, transaction));
         }
 
-        const movie = await createMovieFromRaw(rawMovie, transaction);
-
-        await movieRepo.save(movie);
-        return movie;
+        return movies;
     })
-    
 }
 
 async function createMovieFromRaw(rawMovie, entityManager : EntityManager = AppDataSource.manager){

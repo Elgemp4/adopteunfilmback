@@ -1,8 +1,6 @@
 import { Router } from "express";
 import { body } from "express-validator";
-import { getAllProviders } from "../controllers/providersController.js";
-import { login, register } from "../controllers/authentificationController.js";
-import forceValidation from "../middleware/validate.js";
+import { login, register, renewToken } from "../controllers/authentificationController.js";
 import validate from "../middleware/validate.js";
 
 const authentificationRouter = Router();
@@ -25,5 +23,7 @@ authentificationRouter.post("/register",
     ]),
     register
 )
+
+authentificationRouter.post("/renew", renewToken);
 
 export default authentificationRouter;
