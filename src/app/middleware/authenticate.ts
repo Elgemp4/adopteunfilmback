@@ -11,8 +11,8 @@ const authenticate : Middleware = async (req, res, next) => {
 
         const data : any = jwt.verify(token, "test123");
         const userRepo = AppDataSource.getRepository(User);
-
-        const user = userRepo.findOneBy({id: data.userId});
+        
+        const user = await userRepo.findOneBy({id: data.userId});
 
         req.body["user"] = user;
 
