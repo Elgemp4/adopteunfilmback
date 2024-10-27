@@ -3,7 +3,7 @@ import { suggestMovies } from "../services/provider/moviesProvider.js";
 import { matchedData } from 'express-validator';
 import { RequestHandler } from 'express';
 import { getUserProviders } from '../services/store/providerStore.js';
-import { evaluateMovie } from '../services/store/movieStore.js';
+import { evaluateMovie, saveMoviesIfNotExists } from '../services/store/movieStore.js';
 
 export const suggestMoviesController : RequestHandler = async (req, res) => {
   const userId = req.body.user.id;
@@ -11,13 +11,14 @@ export const suggestMoviesController : RequestHandler = async (req, res) => {
   try{
     const providerIds : number[] = (await getUserProviders(userId)).map((provider) => provider.provider_id);
     
-    const result = await suggestMovies(userId, providerIds);
-    console.log(result)
+    const unsavedMovies = await suggestMovies(userId, providerIds);
+
+    const savedMovies = await saveMoviesIfNotExists(unsavedMovies);
     
-    for(const movie of result){
+    for(const movie of savedMovies){
       movie.poster_path = `https://image.tmdb.org/t/p/w500/${movie.poster_path}`
     }
-    res.json(result);
+    res.json(savedMovies);
   } 
   catch(error){
     console.log(error)
