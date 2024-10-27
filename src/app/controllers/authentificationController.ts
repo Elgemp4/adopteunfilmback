@@ -35,7 +35,7 @@ export const renewToken : RequestHandler = async (req, res) => {
     try{
         const user = await checkRefreshToken(refreshToken);
 
-        sendToken(user, res);    
+        await sendToken(user, res);    
     }
     catch(error){
         res.status(400).json({"message": "Bad renew token"});

@@ -18,7 +18,7 @@ export async function createRefreshToken(user: User) {
 
     const token = jwt.sign({
         userId: user.id,
-    }, "test123", {expiresIn: "1h"})
+    }, "test123", {expiresIn: "20d"})
 
     refreshToken.user = user;
     refreshToken.token = token;
