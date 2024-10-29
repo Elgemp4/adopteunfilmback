@@ -7,6 +7,7 @@ export const getAllProviders :RequestHandler = async (req, res) => {
     const {region, language} = matchedData(req);
 
     const result = await getProviders(language, region);
+    console.log(result);
 
     saveIfNoExistsProvider(result);
 

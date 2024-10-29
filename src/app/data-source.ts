@@ -9,12 +9,6 @@ import { Provider } from "./entity/Provider.js";
 import {Group} from "./entity/Group.js";
 
 
-/*type: "postgres",
-    host: "localhost",
-    port: 5432,
-    username: "root",
-    password: "admin",
-    database: "test",*/
 const AppDataSource = new DataSource({
     type: "mariadb",
     host: process.env.DB_HOST,
@@ -24,7 +18,7 @@ const AppDataSource = new DataSource({
     database: process.env.DB_NAME,
     entities: [User, UserToken, Provider, Movie, MovieReview, Genre, Group],
     synchronize: true,
-    logging: true,
+    logging: false,
 })
 
 export default AppDataSource;

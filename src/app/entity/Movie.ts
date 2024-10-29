@@ -12,7 +12,7 @@ export default class Movie{
     @Column()
     title: string
 
-    @Column()
+    @Column({type: "text"})
     description: string
 
     @Column()

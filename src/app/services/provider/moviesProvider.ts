@@ -1,5 +1,5 @@
 import "dotenv/config"
-import { getUserReview, saveMovieIfNotExists } from "../store/movieStore.js";
+import { getUserReview } from "../store/movieStore.js";
 import tmdbApi from "./tmdbApi.js";
 
 
@@ -15,7 +15,7 @@ export async function suggestMovies(userId: number, providerIds: number[]){
         for(const movie of suggestedMovies.results){
             const review = await getUserReview(userId, movie.id);
             if(review == undefined){
-                unreviewedMovies.push(await saveMovieIfNotExists(movie));
+                unreviewedMovies.push(movie);
             }
 
             if(unreviewedMovies.length > 10){

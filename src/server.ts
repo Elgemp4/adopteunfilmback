@@ -4,6 +4,8 @@ import 'dotenv/config'
 import AppDataSource from './app/data-source.js'
 import { saveGenreIfNotExist } from './app/services/store/genreStore.js'
 import { getGenres } from './app/services/provider/genresProvider.js'
+import { getProviders } from './app/services/provider/providersProvider.js'
+import { saveIfNoExistsProvider } from './app/services/store/providerStore.js'
 
 
 const port = process.env.SERVER_PORT || '3500'
@@ -24,10 +26,13 @@ AppDataSource.initialize()
         console.log("Connected to database");
 
         const genres = await getGenres();
+        const providers = await getProviders("fr", "BE");
 
         for(const genre of genres){
-            saveGenreIfNotExist(genre.id, genre.name);
+            await saveGenreIfNotExist(genre.id, genre.name);
         }
+
+        await saveIfNoExistsProvider(providers);
     })
     .catch((error) => console.log(error))
 
