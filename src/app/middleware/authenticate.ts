@@ -1,6 +1,5 @@
 import { Middleware } from "express-validator/lib/base";
 import AppDataSource from "../data-source.js";
-import UserToken from "../entity/UserToken.js";
 import { User } from "../entity/User.js";
 import jwt from "jsonwebtoken";
 
