@@ -59,7 +59,7 @@ export async function tryLogin(email: string, password : string){
     return user;
 }
 
-export async function createUser(firstName: string, lastName: string, email: string, password: string, birthDate: Date){
+export async function createUser(firstName: string, lastName: string, email: string, password: string, birthDate: string){
     let newUser = new User();
 
     const userRepo = AppDataSource.getRepository(User);

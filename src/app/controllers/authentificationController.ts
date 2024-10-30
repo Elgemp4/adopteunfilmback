@@ -14,7 +14,7 @@ export const login : RequestHandler = async (req, res) => {
         await sendToken(user, res);
     }
     catch(error){
-        res.status(500).json({message: error.message})
+        res.status(400).json({message: error.message})
     }
 }
 
@@ -26,7 +26,7 @@ export const register : RequestHandler = async (req, res) => {
         await setRefreshTokenCookie(newUser, res);
         await sendToken(newUser, res);
     }catch(error){
-        res.status(500).json({message: error})
+        res.status(400).json({message: error})
     }   
 }
 

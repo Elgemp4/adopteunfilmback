@@ -1,4 +1,4 @@
-import app from './app/index.js'
+import app from './app/app.js'
 import 'dotenv/config'
 
 import AppDataSource from './app/data-source.js'

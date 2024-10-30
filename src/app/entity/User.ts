@@ -37,8 +37,8 @@ export class User{
         this.password = bcrypt.hashSync(this.password, 10);
     }
 
-    @Column()
-    birthDate: Date;
+    @Column({type: 'date'})
+    birthDate: string;
 
     @OneToMany('RefreshToken', 'user')
     tokens: RefreshToken[]
