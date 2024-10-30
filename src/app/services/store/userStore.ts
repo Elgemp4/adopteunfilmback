@@ -2,7 +2,7 @@ import AppDataSource from "../../data-source.js";
 import { User } from "../../entity/User.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import UserToken from "../../entity/UserToken.js";
+import RefreshToken from "../../entity/RefreshToken.js";
 
 
 export async function createToken(user : User) {
@@ -14,7 +14,7 @@ export async function createToken(user : User) {
 }
 
 export async function createRefreshToken(user: User) {
-    const refreshToken = new UserToken();
+    const refreshToken = new RefreshToken();
 
     const token = jwt.sign({
         userId: user.id,
@@ -23,15 +23,23 @@ export async function createRefreshToken(user: User) {
     refreshToken.user = user;
     refreshToken.token = token;
 
-    const userTokenRepo = AppDataSource.getRepository(UserToken);
+    const userTokenRepo = AppDataSource.getRepository(RefreshToken);
 
     return await userTokenRepo.save(refreshToken);
 }
 
-export async function checkRenewToken(token : string) {
+export async function checkRenewToken(token : string) { //TODO check db for token
     const decodedToken : any  = jwt.verify(token, "test123");
 
     const userRepo = AppDataSource.getRepository(User);
+    const tokenRepo = AppDataSource.getRepository(RefreshToken);
+
+    const foundToken : RefreshToken = await tokenRepo.findOneBy({token: token});
+
+    if(foundToken.expirationDate.getTime() < new Date().getTime()){
+        throw new Error("Invalid token");
+    }
+
     const user = await userRepo.findOneBy({id: decodedToken.userId})
     return user;
 }
