@@ -16,9 +16,9 @@ const AppDataSource = new DataSource({
     username: process.env.DB_USER,
     password: process.env.DB_PASS,
     database: process.env.DB_NAME,
-    entities: [User, RefreshToken, Provider, Movie, MovieReview, Genre],
+    entities: [User, RefreshToken, Provider, Movie, MovieReview, Genre, Group],
     synchronize: true,
-    logging: false,
+    logging: true,
 })
 
 export default AppDataSource;

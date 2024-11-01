@@ -9,14 +9,14 @@ import {
     PrimaryGeneratedColumn
 } from "typeorm";
 import RefreshToken from "./RefreshToken.js";
-import bcrypt from "bcrypt"
+import bcrypt from "bcrypt";
 import { Provider } from "./Provider.js";
-import {Group} from "./Group.js";
+import { Group } from "./Group.js";
 
 @Entity()
-export class User{
+export class User {
     @PrimaryGeneratedColumn()
-    id: number
+    id: number;
 
     @Column()
     firstName: string;
@@ -27,7 +27,7 @@ export class User{
     @Column({
         unique: true
     })
-    email : string;
+    email: string;
 
     @Column()
     password: string;
@@ -42,7 +42,7 @@ export class User{
     birthDate: Date;
 
     @OneToMany('RefreshToken', 'user')
-    tokens: RefreshToken[]
+    tokens: RefreshToken[];
 
     @ManyToMany(() => Provider)
     @JoinTable({
@@ -52,7 +52,7 @@ export class User{
     })
     providers: Provider[];
 
-    @ManyToMany(() => Group)
+    @ManyToMany("Group", "users")
     @JoinTable({
         name: "user_groups",
         joinColumn: { name: "user_id", referencedColumnName: "id" },

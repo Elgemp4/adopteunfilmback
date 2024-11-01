@@ -26,11 +26,11 @@ export async function createGroup(group: Group, owner: User) {
     return existingGroup;
 }
 
-export async function saveUserGroups(user: User, groupId: number) {
+export async function joinGroup(code: string, user: User) {
     const userRepo = AppDataSource.getRepository(User);
     const groupRepo = AppDataSource.getRepository(Group);
 
-    const group = await groupRepo.findOne({ where: { group_id: groupId } });
+    const group = await groupRepo.findOne({ where: { code } });
 
     if (!group) {
         throw new Error(`Group not found`);
@@ -44,7 +44,7 @@ export async function saveUserGroups(user: User, groupId: number) {
 
     await userRepo.save(user);
 
-    return user;
+    return group;
 }
 
 export async function getUserGroups(userId: number) {

@@ -1,15 +1,9 @@
-import { Column, Entity, ManyToMany, ManyToOne, PrimaryColumn } from "typeorm";
+import { Column, Entity, ManyToMany, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 import { User } from "./User.js";
 
 @Entity()
-export class Group{
-    @ManyToMany(() => User, user => user.groups)
-    users: User[];
-
-    @ManyToOne(() => User)
-    owner: User;
-
-    @PrimaryColumn()
+export class Group {
+    @PrimaryGeneratedColumn()
     group_id: number;
 
     @Column()
@@ -17,4 +11,10 @@ export class Group{
 
     @Column({ unique: true })
     code: string;
+
+    @ManyToMany("User", "groups")
+    users: User[];
+
+    @ManyToOne("User", "groups", { eager: true })
+    owner: User;
 }
