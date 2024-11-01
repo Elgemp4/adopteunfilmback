@@ -1,6 +1,6 @@
 
 import { RequestHandler, Response } from "express";
-import { checkRenewToken as getUserFromRefreshToken, createRefreshToken, createToken, createUser, tryLogin } from "../services/store/userStore.js";
+import { checkRenewToken as getUserFromRefreshToken, createRefreshToken, createToken, createUser, tryLogin, checkToken } from "../services/store/userStore.js";
 import { matchedData} from "express-validator";
 import { User } from "../entity/User.js";
 
@@ -43,6 +43,10 @@ export const renewToken : RequestHandler = async (req, res) => {
     }
 }
 
+export const checkTokenController : RequestHandler = async (req, res) => {
+    res.status(200).json({"message": "Token is valid"})
+}
+
 
 const setRefreshTokenCookie = async (user: User, res: Response) => {
     const refreshToken = await createRefreshToken(user);
@@ -65,7 +69,8 @@ const sendToken = async (user: User, res : Response) => {
                 firstName: user.firstName,
                 lastName: user.lastName,
                 email: user.email,
-                birthDate: user.birthDate
+                birthDate: user.birthDate,
+                isFullyRegistered: user.isFullyRegistered
             },
             token: token
         });

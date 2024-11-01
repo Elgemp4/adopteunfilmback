@@ -20,5 +20,6 @@ export const changeSettings : RequestHandler = async (req, res) => {
         lastName: updatedUser.lastName,
         birthDate: updatedUser.birthDate,
         email: updatedUser.email,
+        isFullyRegistered: updatedUser.isFullyRegistered
     }})
 }

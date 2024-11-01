@@ -1,7 +1,8 @@
 import { Router } from "express";
 import { body } from "express-validator";
-import { login, register, renewToken } from "../controllers/authentificationController.js";
+import { checkTokenController, login, register, renewToken } from "../controllers/authentificationController.js";
 import validate from "../middleware/validate.js";
+import authenticate from "../middleware/authenticate.js";
 
 const authentificationRouter = Router();
 
@@ -22,6 +23,11 @@ authentificationRouter.post("/register",
         body("birthdate").isDate().escape()
     ]),
     register
+)
+
+authentificationRouter.post("/token",
+    authenticate,
+    checkTokenController
 )
 
 authentificationRouter.post("/renew", renewToken);

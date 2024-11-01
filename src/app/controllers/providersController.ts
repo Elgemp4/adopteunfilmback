@@ -2,6 +2,7 @@ import { matchedData } from "express-validator";
 import { getProviders } from "../services/provider/providersProvider.js";
 import { RequestHandler } from "express";
 import {getUserProviders, saveIfNoExistsProvider, saveUserProviders, getSavedProviders} from "../services/store/providerStore.js";
+import { setIsFullyRegister } from "../services/store/userStore.js";
 
 export const getAllProviders :RequestHandler = async (req, res) => {
     const {region, language} = matchedData(req);
@@ -37,6 +38,10 @@ export const addUserProviders : RequestHandler = async (req, res) => {
 
     try {
         const userWithProviders = await saveUserProviders(user, providerIds);
+
+        if(!user.isFullyRegistered){
+            await setIsFullyRegister(user);
+        }
 
         res.json({ providers: userWithProviders.providers });
     } catch (error) {

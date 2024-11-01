@@ -40,6 +40,9 @@ export class User{
     @Column({type: 'date'})
     birthDate: string;
 
+    @Column({type:"bool", default: false})
+    isFullyRegistered: boolean;
+
     @OneToMany('RefreshToken', 'user')
     tokens: RefreshToken[]
 
