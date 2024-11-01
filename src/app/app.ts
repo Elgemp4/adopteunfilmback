@@ -6,6 +6,7 @@ import providerRouter from './routes/providersRouters.js';
 import authentificationRouter from './routes/authentificationRoutes.js';
 
 import cookieParser from 'cookie-parser';
+import settingsRouter from './routes/settingRoutes.js';
 
 const app = express();
 
@@ -20,5 +21,6 @@ app.set("trust proxy", 1);
 app.use("/movies", movieRouter);
 app.use("/providers", providerRouter);
 app.use("/", authentificationRouter);
+app.use("/settings", settingsRouter)
 
 export default app;

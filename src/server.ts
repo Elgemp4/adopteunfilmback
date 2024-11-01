@@ -1,4 +1,4 @@
-import app from './app/index.js'
+import app from './app/app.js'
 import 'dotenv/config'
 
 import AppDataSource from './app/data-source.js'
@@ -10,7 +10,7 @@ import { saveIfNoExistsProvider } from './app/services/store/providerStore.js'
 
 const port = process.env.SERVER_PORT || '3500'
 
-const requiredEnv = ["TMDB_URL", "TMDB_TOKEN"]
+const requiredEnv = ["TMDB_URL", "TMDB_TOKEN", "JWT_SECRET", "DB_NAME", "DB_HOST", "DB_PORT", "DB_USER", "DB_PASS"]
 
 for(const env of requiredEnv){
     if(process.env[env] == undefined){

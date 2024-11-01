@@ -1,24 +1,18 @@
 import { Middleware } from "express-validator/lib/base";
-import AppDataSource from "../data-source.js";
-import { User } from "../entity/User.js";
-import jwt from "jsonwebtoken";
+import { checkToken } from "../services/store/userStore.js";
 
 const authenticate : Middleware = async (req, res, next) => {
     try{
         const authorizationHeader = req.headers["authorization"]
         const token = authorizationHeader.split(" ")[1];
 
-        const data : any = jwt.verify(token, "test123");
-        const userRepo = AppDataSource.getRepository(User);
-        
-        const user = await userRepo.findOneBy({id: data.userId});
-
-        req.body["user"] = user;
+        req.body["user"] = await checkToken(token);
 
         next();
     }
-    catch(_){
+    catch(error){
         res.status(401).json({message: "Invalid token"})
+        return;
     }    
 } 
 
