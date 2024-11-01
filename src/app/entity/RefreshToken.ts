@@ -1,12 +1,10 @@
 import { BeforeInsert, BeforeUpdate, Column, Entity, JoinColumn, ManyToOne, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 import { User } from "./User.js";
 
-import crypto from "crypto"
-
 const msPerMinute = 60000;
 
 @Entity()
-export default class UserToken{
+export default class RefreshToken{
     @PrimaryGeneratedColumn()
     id: number;
 
@@ -17,9 +15,8 @@ export default class UserToken{
     expirationDate: Date;
 
     @BeforeInsert()
-    @BeforeUpdate()
     expendExpiration(){
-        this.expirationDate = new Date(new Date().getTime() + 30 * msPerMinute);
+        this.expirationDate = new Date(new Date().getTime() + 28800 * msPerMinute); //20 days
     }
     
     @ManyToOne('User', 'tokens')

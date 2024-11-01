@@ -1,7 +1,7 @@
 import "reflect-metadata"
 import { DataSource } from "typeorm"
 import { User } from "./entity/User.js"
-import UserToken from "./entity/UserToken.js";
+import RefreshToken from "./entity/RefreshToken.js";
 import Movie from "./entity/Movie.js";
 import MovieReview from "./entity/MovieReview.js";
 import Genre from "./entity/Genre.js";
@@ -16,7 +16,7 @@ const AppDataSource = new DataSource({
     username: process.env.DB_USER,
     password: process.env.DB_PASS,
     database: process.env.DB_NAME,
-    entities: [User, UserToken, Provider, Movie, MovieReview, Genre, Group],
+    entities: [User, RefreshToken, Provider, Movie, MovieReview, Genre],
     synchronize: true,
     logging: false,
 })

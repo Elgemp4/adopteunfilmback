@@ -8,7 +8,7 @@ import {
     OneToMany,
     PrimaryGeneratedColumn
 } from "typeorm";
-import UserToken from "./UserToken.js";
+import RefreshToken from "./RefreshToken.js";
 import bcrypt from "bcrypt"
 import { Provider } from "./Provider.js";
 import {Group} from "./Group.js";
@@ -41,8 +41,8 @@ export class User{
     @Column()
     birthDate: Date;
 
-    @OneToMany('UserToken', 'user')
-    tokens: UserToken[]
+    @OneToMany('RefreshToken', 'user')
+    tokens: RefreshToken[]
 
     @ManyToMany(() => Provider)
     @JoinTable({

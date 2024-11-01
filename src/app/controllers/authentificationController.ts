@@ -1,6 +1,6 @@
 
 import { RequestHandler, Response } from "express";
-import { checkRenewToken as checkRefreshToken, createRefreshToken, createToken, createUser, tryLogin } from "../services/store/userStore.js";
+import { checkRenewToken as getUserFromRefreshToken, createRefreshToken, createToken, createUser, tryLogin } from "../services/store/userStore.js";
 import { matchedData} from "express-validator";
 import { User } from "../entity/User.js";
 
@@ -23,6 +23,7 @@ export const register : RequestHandler = async (req, res) => {
     try{
         const newUser = await createUser(firstname, lastname, email, password, birthdate)
     
+        await setRefreshTokenCookie(newUser, res);
         await sendToken(newUser, res);
     }catch(error){
         res.status(500).json({message: error})
@@ -33,7 +34,7 @@ export const renewToken : RequestHandler = async (req, res) => {
     const refreshToken = req.cookies.refreshToken;
 
     try{
-        const user = await checkRefreshToken(refreshToken);
+        const user = await getUserFromRefreshToken(refreshToken);
 
         await sendToken(user, res);    
     }
