@@ -35,6 +35,6 @@ export const joinGroupHandler: RequestHandler = async (req, res) => {
         const group = await joinGroup(code, user);
         res.json({ group });
     } catch (error) {
-        res.status(500).json({ message: error.message });
+        res.status(500).json(error);
     }
 }
