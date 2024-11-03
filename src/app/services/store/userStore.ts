@@ -3,12 +3,14 @@ import { User } from "../../entity/User.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import RefreshToken from "../../entity/RefreshToken.js";
+import "dotenv/config"
 
+const jwtSecret = process.env.JWT_SECRET;
 
 export async function createToken(user : User) {
     const token = jwt.sign({
         userId: user.id,
-    }, "test123", {expiresIn: "1h"})
+    }, jwtSecret, {expiresIn: "1h"})
 
     return token;
 }
@@ -18,7 +20,7 @@ export async function createRefreshToken(user: User) {
 
     const token = jwt.sign({
         userId: user.id,
-    }, "test123", {expiresIn: "20d"})
+    }, jwtSecret, {expiresIn: "20d"})
 
     refreshToken.user = user;
     refreshToken.token = token;
@@ -28,8 +30,16 @@ export async function createRefreshToken(user: User) {
     return await userTokenRepo.save(refreshToken);
 }
 
-export async function checkRenewToken(token : string) { //TODO check db for token
-    const decodedToken : any  = jwt.verify(token, "test123");
+export async function checkToken(token: string){
+    const data : any = jwt.verify(token, jwtSecret);
+
+    const userRepo = AppDataSource.getRepository(User);
+    
+    return await userRepo.findOneBy({id: data.userId});
+}
+
+export async function checkRenewToken(token : string) { 
+    const decodedToken : any  = jwt.verify(token, jwtSecret);
 
     const userRepo = AppDataSource.getRepository(User);
     const tokenRepo = AppDataSource.getRepository(RefreshToken);
@@ -48,6 +58,7 @@ export async function tryLogin(email: string, password : string){
     const userRepo = AppDataSource.getRepository(User);
 
     const users = await userRepo.findBy({ email });
+
     if(users.length == 0 || !await bcrypt.compare(password, users[0].password)){
         throw new Error("Bad credentials");
     }
@@ -59,7 +70,7 @@ export async function tryLogin(email: string, password : string){
     return user;
 }
 
-export async function createUser(firstName: string, lastName: string, email: string, password: string, birthDate: Date){
+export async function createUser(firstName: string, lastName: string, email: string, password: string, birthDate: string) : Promise<User>{
     let newUser = new User();
 
     const userRepo = AppDataSource.getRepository(User);
@@ -75,4 +86,13 @@ export async function createUser(firstName: string, lastName: string, email: str
     newUser.password = undefined;
 
     return newUser;
+}
+
+export async function setIsFullyRegister(user : User) : Promise<User> {
+    const userRepo = AppDataSource.getRepository(User);
+
+    user.isFullyRegistered = true;
+    await userRepo.update({id: user.id}, {isFullyRegistered: true})
+
+    return user;
 }

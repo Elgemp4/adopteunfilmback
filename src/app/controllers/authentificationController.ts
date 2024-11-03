@@ -1,6 +1,6 @@
 
 import { RequestHandler, Response } from "express";
-import { checkRenewToken as getUserFromRefreshToken, createRefreshToken, createToken, createUser, tryLogin } from "../services/store/userStore.js";
+import { checkRenewToken as getUserFromRefreshToken, createRefreshToken, createToken, createUser, tryLogin, checkToken } from "../services/store/userStore.js";
 import { matchedData} from "express-validator";
 import { User } from "../entity/User.js";
 
@@ -14,7 +14,7 @@ export const login : RequestHandler = async (req, res) => {
         await sendToken(user, res);
     }
     catch(error){
-        res.status(500).json({message: error.message})
+        res.status(400).json({message: error.message})
     }
 }
 
@@ -26,7 +26,7 @@ export const register : RequestHandler = async (req, res) => {
         await setRefreshTokenCookie(newUser, res);
         await sendToken(newUser, res);
     }catch(error){
-        res.status(500).json({message: error})
+        res.status(400).json({message: error})
     }   
 }
 
@@ -41,6 +41,10 @@ export const renewToken : RequestHandler = async (req, res) => {
     catch(error){
         res.status(400).json({"message": "Bad renew token"});
     }
+}
+
+export const checkTokenController : RequestHandler = async (req, res) => {
+    res.status(200).json({"message": "Token is valid"})
 }
 
 
@@ -65,7 +69,8 @@ const sendToken = async (user: User, res : Response) => {
                 firstName: user.firstName,
                 lastName: user.lastName,
                 email: user.email,
-                birthDate: user.birthDate
+                birthDate: user.birthDate,
+                isFullyRegistered: user.isFullyRegistered
             },
             token: token
         });

@@ -7,6 +7,7 @@ import authentificationRouter from './routes/authentificationRoutes.js';
 import groupRouter from './routes/groupsRoutes.js';
 
 import cookieParser from 'cookie-parser';
+import settingsRouter from './routes/settingRoutes.js';
 
 const app = express();
 
@@ -22,5 +23,6 @@ app.use("/groups", groupRouter);
 app.use("/movies", movieRouter);
 app.use("/providers", providerRouter);
 app.use("/", authentificationRouter);
+app.use("/settings", settingsRouter)
 
 export default app;

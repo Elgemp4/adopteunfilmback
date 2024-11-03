@@ -1,4 +1,4 @@
-import { ContextRunner, validationResult } from "express-validator";
+import { ContextRunner } from "express-validator";
 import { Middleware } from "express-validator/lib/base";
 
 

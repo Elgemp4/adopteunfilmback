@@ -38,8 +38,11 @@ export class User {
         this.password = bcrypt.hashSync(this.password, 10);
     }
 
-    @Column()
-    birthDate: Date;
+    @Column({type: 'date'})
+    birthDate: string;
+
+    @Column({type:"bool", default: false})
+    isFullyRegistered: boolean;
 
     @OneToMany('RefreshToken', 'user')
     tokens: RefreshToken[];
