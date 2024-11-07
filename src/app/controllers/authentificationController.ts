@@ -47,6 +47,11 @@ export const checkTokenController : RequestHandler = async (req, res) => {
     res.status(200).json({"message": "Token is valid"})
 }
 
+export const removeRefreshToken : RequestHandler = async (req, res) => {
+    res.clearCookie("refreshToken");
+    res.status(200).send();
+}
+
 
 const setRefreshTokenCookie = async (user: User, res: Response) => {
     const refreshToken = await createRefreshToken(user);
