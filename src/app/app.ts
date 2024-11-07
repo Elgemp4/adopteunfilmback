@@ -2,8 +2,9 @@ import express from 'express'
 import cors from 'cors'
 
 import movieRouter from './routes/moviesRoutes.js';
-import providerRouter from './routes/providersRouters.js';
+import providerRouter from './routes/providersRoutes.js';
 import authentificationRouter from './routes/authentificationRoutes.js';
+import groupRouter from './routes/groupsRoutes.js';
 
 import cookieParser from 'cookie-parser';
 import settingsRouter from './routes/settingRoutes.js';
@@ -18,6 +19,7 @@ app.use(cors({
 app.use(cookieParser());
 app.set("trust proxy", 1);
 
+app.use("/groups", groupRouter);
 app.use("/movies", movieRouter);
 app.use("/providers", providerRouter);
 app.use("/", authentificationRouter);
