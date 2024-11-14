@@ -47,6 +47,15 @@ export const checkTokenController : RequestHandler = async (req, res) => {
     res.status(200).json({"message": "Token is valid"})
 }
 
+export const removeRefreshToken : RequestHandler = async (req, res) => {
+    res.clearCookie("refreshToken", {
+        httpOnly: true,
+        domain: "localhost",
+        path: "/refresh/"
+});
+    res.end();
+}
+
 
 const setRefreshTokenCookie = async (user: User, res: Response) => {
     const refreshToken = await createRefreshToken(user);
@@ -55,7 +64,7 @@ const setRefreshTokenCookie = async (user: User, res: Response) => {
         httpOnly: true,
         domain: "localhost",
         maxAge: 20 * 86400000, //20 jours
-        path: "/renew"
+        path: "/refresh/"
     })
 }
 
