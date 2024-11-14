@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { body } from "express-validator";
-import { checkTokenController, login, register, removeRefreshToken, renewToken } from "../controllers/authentificationController.js";
+import { checkTokenController, login, register, renewToken } from "../controllers/authentificationController.js";
 import validate from "../middleware/validate.js";
 import authenticate from "../middleware/authenticate.js";
 
@@ -28,10 +28,11 @@ authentificationRouter.post("/register",
 authentificationRouter.post("/token",
     authenticate,
     checkTokenController
-)
+)           
 
-authentificationRouter.post("/logout", removeRefreshToken)
-
-authentificationRouter.post("/renew", renewToken);
+authentificationRouter.post("/renew", validate([
+    body("token").isString(),
+    body("refreshToken").isString(),
+]), renewToken);
 
 export default authentificationRouter;

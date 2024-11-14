@@ -38,6 +38,12 @@ export async function checkToken(token: string){
     return await userRepo.findOneBy({id: data.userId});
 }
 
+export function getUserIdFromToken(token: string){
+    const result : any = jwt.decode(token);
+
+    return result.userId;
+}
+
 export async function checkRenewToken(token : string) { 
     const decodedToken : any  = jwt.verify(token, jwtSecret);
 
