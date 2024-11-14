@@ -1,8 +1,9 @@
 
-import { RequestHandler, Response } from "express";
-import { checkRenewToken as getUserFromRefreshToken, createRefreshToken, createToken, createUser, tryLogin, checkToken } from "../services/store/userStore.js";
+import { RequestHandler } from "express";
+import { checkRenewToken , createRefreshToken, createToken, createUser, tryLogin, checkToken, getUserIdFromToken } from "../services/store/userStore.js";
 import { matchedData} from "express-validator";
 import { User } from "../entity/User.js";
+import jwt from "jsonwebtoken";
 
 export const login : RequestHandler = async (req, res) => {
     const {email, password} = matchedData(req);
@@ -10,8 +11,8 @@ export const login : RequestHandler = async (req, res) => {
     try{
         const user = await tryLogin(email, password);
 
-        await setRefreshTokenCookie(user, res);
-        await sendToken(user, res);
+        const jsonResponse = await createRefreshAndNormalToken(user);
+        res.json(jsonResponse);
     }
     catch(error){
         res.status(400).json({message: error.message})
@@ -23,54 +24,27 @@ export const register : RequestHandler = async (req, res) => {
     try{
         const newUser = await createUser(firstname, lastname, email, password, birthdate)
     
-        await setRefreshTokenCookie(newUser, res);
-        await sendToken(newUser, res);
+        const jsonResponse = await createRefreshAndNormalToken(newUser);
+        res.json(jsonResponse);
     }catch(error){
         res.status(400).json({message: error})
     }   
 }
 
 export const renewToken : RequestHandler = async (req, res) => {
-    const refreshToken = req.cookies.refreshToken;
+
+    const {token, refreshToken } = matchedData(req);
 
     try{
-        const user = await getUserFromRefreshToken(refreshToken);
+        const userId = getUserIdFromToken(token);
+        
+        const user = await checkRenewToken(refreshToken);
+        
+        if(user.id != userId){
+            throw new Error();
+        }
 
-        await sendToken(user, res);    
-    }
-    catch(error){
-        res.status(400).json({"message": "Bad renew token"});
-    }
-}
-
-export const checkTokenController : RequestHandler = async (req, res) => {
-    res.status(200).json({"message": "Token is valid"})
-}
-
-export const removeRefreshToken : RequestHandler = async (req, res) => {
-    res.clearCookie("refreshToken", {
-        httpOnly: true,
-        domain: "localhost",
-        path: "/refresh/"
-});
-    res.end();
-}
-
-
-const setRefreshTokenCookie = async (user: User, res: Response) => {
-    const refreshToken = await createRefreshToken(user);
-
-    res.cookie("refreshToken", refreshToken.token, {
-        httpOnly: true,
-        domain: "localhost",
-        maxAge: 20 * 86400000, //20 jours
-        path: "/refresh/"
-    })
-}
-
-
-const sendToken = async (user: User, res : Response) => {
-        const token = await createToken(user);        
+        const newToken = await createToken(user);        
 
         res.json({
             user: {
@@ -81,6 +55,33 @@ const sendToken = async (user: User, res : Response) => {
                 birthDate: user.birthDate,
                 isFullyRegistered: user.isFullyRegistered
             },
-            token: token
-        });
+            token: newToken
+        });   
+    }
+    catch(error){
+        res.status(400).json({"message": "Bad renew token"});
+    }
+}
+
+export const checkTokenController : RequestHandler = async (req, res) => {
+    res.status(200).json({"message": "Token is valid"})
+}
+
+
+const createRefreshAndNormalToken = async (user: User) => {
+    const token = await createToken(user); 
+    const refreshToken = await createRefreshToken(user);
+
+    return {
+        user: {
+            id: user.id,
+            firstName: user.firstName,
+            lastName: user.lastName,
+            email: user.email,
+            birthDate: user.birthDate,
+            isFullyRegistered: user.isFullyRegistered
+        },
+        token,
+        refreshToken: refreshToken.token
+    }
 }
