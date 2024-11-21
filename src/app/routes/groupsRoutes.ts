@@ -1,6 +1,11 @@
 import {Router} from "express";
 import authenticate from "../middleware/authenticate.js";
-import {createGroupHandler, getUserPersonalGroups, joinGroupHandler, getGroupUsersHandler} from "../controllers/groupsController.js";
+import {
+    createGroupHandler,
+    getUserPersonalGroups,
+    joinGroupHandler,
+    getGroupUsersHandler, getGroupCodeHandler
+} from "../controllers/groupsController.js";
 import validate from "../middleware/validate.js";
 import {body} from "express-validator";
 
@@ -30,6 +35,11 @@ groupRouter.post("/join",
 groupRouter.get("/:groupId/users",
     authenticate,
     getGroupUsersHandler
+);
+
+groupRouter.get("/:groupId/code",
+    authenticate,
+    getGroupCodeHandler
 );
 
 export default groupRouter;

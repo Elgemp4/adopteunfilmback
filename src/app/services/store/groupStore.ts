@@ -85,5 +85,20 @@ export async function getUsersFromGroup(groupId: number) {
         throw new Error(`Group not found`);
     }
 
-    return group.users;
+    return group.users.map(user => ({
+        id: user.id,
+        firstname: user.firstName,
+        lastname: user.lastName
+    }));
+}
+
+export async function getGroupCode(groupId: number) {
+    const groupRepo = AppDataSource.getRepository(Group);
+    const group = await groupRepo.findOne({ where: { group_id: groupId } });
+
+    if (!group) {
+        throw new Error(`Group not found`);
+    }
+
+    return { code: group.code };
 }
