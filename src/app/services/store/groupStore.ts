@@ -76,3 +76,14 @@ export async function getUserGroups(userId: number) {
 
     return userWithGroups.groups;
 }
+
+export async function getUsersFromGroup(groupId: number) {
+    const groupRepo = AppDataSource.getRepository(Group);
+    const group = await groupRepo.findOne({ where: { group_id: groupId }, relations: ["users"] });
+
+    if (!group) {
+        throw new Error(`Group not found`);
+    }
+
+    return group.users;
+}
