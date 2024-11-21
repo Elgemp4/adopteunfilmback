@@ -27,11 +27,14 @@ export async function createGroup(group: Group, owner: User) {
 
         await groupRepo.save(newGroup);
 
-        if (!owner.groups) {
-            owner.groups = [];
+        const userWithGroups = await userRepo.findOne({ where: { id: owner.id }, relations: ["groups"] });
+
+        if (!userWithGroups) {
+            throw new Error(`User not found`);
         }
-        owner.groups.push(newGroup);
-        await userRepo.save(owner);
+
+        userWithGroups.groups.push(newGroup);
+        await userRepo.save(userWithGroups);
 
         return newGroup;
     }
