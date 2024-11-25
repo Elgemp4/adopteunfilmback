@@ -26,6 +26,7 @@ export async function getMovie(movieId, entityManager : EntityManager = AppDataS
         where: {
             id: movieId
         },
+        relations: ["genres"],
         lock:{mode: "pessimistic_write"} 
     })
 }
