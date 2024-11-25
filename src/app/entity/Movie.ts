@@ -16,10 +16,16 @@ export default class Movie{
     description: string
 
     @Column()
+    release_date: Date
+
+    @Column()
     poster_path: string
 
     @Column()
     vote_avg: Number
+
+    @Column()
+    vote_count: Number
 
     @ManyToMany(() => Genre)
     @JoinTable()

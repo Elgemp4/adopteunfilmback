@@ -3,6 +3,7 @@ import AppDataSource from "../../data-source.js";
 import Genre from "../../entity/Genre.js";
 import Movie from "../../entity/Movie.js";
 import MovieReview from "../../entity/MovieReview.js";
+import { raw } from "express";
 
 export async function getUserReview(userId, movieId){
     const movieReviewRepo = AppDataSource.getRepository(MovieReview);
@@ -25,6 +26,7 @@ export async function getMovie(movieId, entityManager : EntityManager = AppDataS
         where: {
             id: movieId
         },
+        relations: ["genres"],
         lock:{mode: "pessimistic_write"} 
     })
 }
@@ -33,6 +35,7 @@ async function saveMovieIfNotExists(rawMovie, entityManager : EntityManager){
     
     const movieRepo = entityManager.getRepository(Movie);
     const existingMovie = await getMovie(rawMovie.id, entityManager)
+
     if(existingMovie != undefined)
     {
         return existingMovie;
@@ -65,8 +68,10 @@ async function createMovieFromRaw(rawMovie, entityManager : EntityManager = AppD
         adult: rawMovie.adult,
         title: rawMovie.title,
         description: rawMovie.overview,
-        poster_path: rawMovie.poster_path
-        ,vote_avg: rawMovie.vote_average
+        release_date: rawMovie.release_date,
+        poster_path: rawMovie.poster_path,
+        vote_avg: rawMovie.vote_average,
+        vote_count: rawMovie.vote_count
     });
 
     movie.genres = [];

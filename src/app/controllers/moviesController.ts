@@ -17,6 +17,7 @@ export const suggestMoviesController : RequestHandler = async (req, res) => {
     
     for(const movie of savedMovies){
       movie.poster_path = `https://image.tmdb.org/t/p/w500/${movie.poster_path}`
+      console.log(movie.genres);
     }
     res.json(savedMovies);
   } 
