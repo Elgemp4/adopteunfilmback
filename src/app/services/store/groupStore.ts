@@ -27,11 +27,14 @@ export async function createGroup(group: Group, owner: User) {
 
         await groupRepo.save(newGroup);
 
-        if (!owner.groups) {
-            owner.groups = [];
+        const userWithGroups = await userRepo.findOne({ where: { id: owner.id }, relations: ["groups"] });
+
+        if (!userWithGroups) {
+            throw new Error(`User not found`);
         }
-        owner.groups.push(newGroup);
-        await userRepo.save(owner);
+
+        userWithGroups.groups.push(newGroup);
+        await userRepo.save(userWithGroups);
 
         return newGroup;
     }
@@ -75,4 +78,30 @@ export async function getUserGroups(userId: number) {
     }
 
     return userWithGroups.groups;
+}
+
+export async function getUsersFromGroup(groupId: number) {
+    const groupRepo = AppDataSource.getRepository(Group);
+    const group = await groupRepo.findOne({ where: { group_id: groupId }, relations: ["users"] });
+
+    if (!group) {
+        throw new Error(`Group not found`);
+    }
+
+    return group.users.map(user => ({
+        id: user.id,
+        firstname: user.firstName,
+        lastname: user.lastName
+    }));
+}
+
+export async function getGroupCode(groupId: number) {
+    const groupRepo = AppDataSource.getRepository(Group);
+    const group = await groupRepo.findOne({ where: { group_id: groupId } });
+
+    if (!group) {
+        throw new Error(`Group not found`);
+    }
+
+    return { code: group.code };
 }
