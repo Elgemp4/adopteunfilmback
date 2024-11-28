@@ -70,38 +70,12 @@ export async function joinGroup(code: string, user: User) {
 }
 
 export async function getUserGroups(userId: number) {
-    const userRepo = AppDataSource.getRepository(User);
-    const userWithGroups = await userRepo.findOne({ where: { id: userId }, relations: ["groups"] });
-
-    if (!userWithGroups) {
+    const groupRepo = AppDataSource.getRepository(Group);
+    const groups = await groupRepo.find({ where: { ownerId: userId }, relations: ["users"] });
+    console.log(groups)
+    if (!groups) {
         throw new Error(`User not found`);
     }
 
-    return userWithGroups.groups;
-}
-
-export async function getUsersFromGroup(groupId: number) {
-    const groupRepo = AppDataSource.getRepository(Group);
-    const group = await groupRepo.findOne({ where: { group_id: groupId }, relations: ["users"] });
-
-    if (!group) {
-        throw new Error(`Group not found`);
-    }
-
-    return group.users.map(user => ({
-        id: user.id,
-        firstname: user.firstName,
-        lastname: user.lastName
-    }));
-}
-
-export async function getGroupCode(groupId: number) {
-    const groupRepo = AppDataSource.getRepository(Group);
-    const group = await groupRepo.findOne({ where: { group_id: groupId } });
-
-    if (!group) {
-        throw new Error(`Group not found`);
-    }
-
-    return { code: group.code };
+    return groups;
 }
