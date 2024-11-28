@@ -2,8 +2,7 @@ import {RequestHandler} from "express";
 import {
     getUserGroups,
     createGroup,
-    joinGroup,
-    getUsersFromGroup, getGroupCode
+    joinGroup
 } from "../services/store/groupStore.js";
 import {User} from "../entity/User.js";
 import {Group} from "../entity/Group.js";
@@ -41,27 +40,5 @@ export const joinGroupHandler: RequestHandler = async (req, res) => {
         res.json({ group });
     } catch (error) {
         res.status(500).json(error);
-    }
-}
-
-export const getGroupUsersHandler: RequestHandler = async (req, res) => {
-    const { groupId } = req.params;
-
-    try {
-        const users = await getUsersFromGroup(parseInt(groupId));
-        res.json({ users });
-    } catch (error) {
-        res.status(500).json({ message: error.message });
-    }
-}
-
-export const getGroupCodeHandler: RequestHandler = async (req, res) => {
-    const { groupId } = req.params;
-
-    try {
-        const { code } = await getGroupCode(parseInt(groupId));
-        res.json({ code });
-    } catch (error) {
-        res.status(500).json({ message: error.message });
     }
 }

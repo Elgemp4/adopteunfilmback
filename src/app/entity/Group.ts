@@ -17,4 +17,7 @@ export class Group {
 
     @ManyToOne("User", "groups", { eager: true })
     owner: User;
+
+    @Column()
+    ownerId: number;
 }
