@@ -8,6 +8,8 @@ import {
 import {User} from "../entity/User.js";
 import {Group} from "../entity/Group.js";
 import { getBestRatedMoviesBy, getMovieWithoutTransaction, getUserWhoLiked as getUsersWhoLiked } from "../services/store/movieStore.js";
+import "dotenv/config";
+
 
 export const getUserPersonalGroups : RequestHandler = async (req, res) => {
     const user = req.body.user;
@@ -65,6 +67,8 @@ export const getGroupSuggestions: RequestHandler = async (req, res) => {
         for(const suggestion of rawSuggestions){
             const users = await getUsersWhoLiked(suggestion.movieId, selectedUsersId);
             const movie = await getMovieWithoutTransaction(suggestion.movieId);
+            movie.poster_path = `${process.env.POSTER_URL}${movie.poster_path}`;
+
             suggestions.push({
                 movie,
                 users
