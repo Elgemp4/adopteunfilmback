@@ -2,6 +2,7 @@ import {Router} from "express";
 import authenticate from "../middleware/authenticate.js";
 import {
     createGroupHandler,
+    getGroupSuggestions,
     getUserPersonalGroups,
     joinGroupHandler
 } from "../controllers/groupsController.js";
@@ -22,6 +23,8 @@ groupRouter.post("/create",
     ]),
     createGroupHandler
 )
+
+groupRouter.get("/:id/suggestions", authenticate, getGroupSuggestions);
 
 groupRouter.post("/join",
     authenticate,

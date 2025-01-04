@@ -4,6 +4,7 @@ import Genre from "../../entity/Genre.js";
 import Movie from "../../entity/Movie.js";
 import MovieReview from "../../entity/MovieReview.js";
 import { raw } from "express";
+import { User } from "../../entity/User.js";
 
 export async function getUserReview(userId, movieId){
     const movieReviewRepo = AppDataSource.getRepository(MovieReview);
@@ -96,4 +97,18 @@ export async function evaluateMovie(userId, movieId, appreciate, seen){
     review.appreciate = appreciate == 'true'; //MEH je suis pas convaincu de ça faut que je recherche un alternative
     review.seen = seen == 'true';
     movieReviewRepo.save(review);
+}
+
+export async function getBestRatedMoviesBy(users : User[]){
+    const movieReviewRepo = AppDataSource.getRepository(MovieReview);
+    const movies = await movieReviewRepo.createQueryBuilder("review")
+        .select("review.movieId")
+        .addSelect("AVG(review.appreciate)", "avg")
+        .where("review.userId IN (:...users)", {users: users.map(u => u.id)})
+        .groupBy("review.movieId")
+        .orderBy("avg", "DESC")
+        .limit(10)
+        .getRawMany();
+
+    return movies;
 }
