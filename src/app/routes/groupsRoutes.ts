@@ -24,7 +24,9 @@ groupRouter.post("/create",
     createGroupHandler
 )
 
-groupRouter.get("/:id/suggestions", authenticate, getGroupSuggestions);
+groupRouter.get("/:id/suggestions", 
+    authenticate, 
+    getGroupSuggestions);
 
 groupRouter.post("/join",
     authenticate,

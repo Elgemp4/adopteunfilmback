@@ -45,11 +45,17 @@ export const joinGroupHandler: RequestHandler = async (req, res) => {
     }
 }
 
+const isArrayOfStrings = (value: any): value is string[] =>
+    Array.isArray(value) && value.every((item) => typeof item === 'string');
+
 export const getGroupSuggestions: RequestHandler = async (req, res) => {
     try {
-        const groupId = Number.parseInt(req.params.id);
-        const groupUsers = await getUserInGroup(groupId);
-        const suggestions = await getBestRatedMoviesBy(groupUsers)
+        if(!isArrayOfStrings(req.query.u)){
+            res.status(400).json({message: "Invalid query parameter"});
+            return;
+        }
+        const selectedUsersId = req.query.u.map((id: string) => parseInt(id));
+        const suggestions = await getBestRatedMoviesBy(selectedUsersId)
         res.json({ suggestions: suggestions });
     } catch (error) {
         res.status(500).json(error);
