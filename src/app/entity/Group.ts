@@ -12,7 +12,7 @@ export class Group {
     @Column({ unique: true })
     code: string;
 
-    @ManyToMany("User", "groups")
+    @ManyToMany("User", "groups", { eager: true })
     users: User[];
 
     @ManyToOne("User", "groups", { eager: true })

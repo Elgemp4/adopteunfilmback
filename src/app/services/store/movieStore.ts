@@ -1,4 +1,4 @@
-import { EntityManager } from "typeorm";
+import { EntityManager, In } from "typeorm";
 import AppDataSource from "../../data-source.js";
 import Genre from "../../entity/Genre.js";
 import Movie from "../../entity/Movie.js";
@@ -20,8 +20,18 @@ export async function getUserReview(userId, movieId){
     return review;
 }
 
+export async function getMovieWithoutTransaction(movieId){
+    const movieRepo = AppDataSource.getRepository(Movie);
 
-export async function getMovie(movieId, entityManager : EntityManager = AppDataSource.manager){
+    return await movieRepo.findOne({
+        where: {
+            id: movieId
+        },
+        relations: ["genres"]
+    })
+}
+
+export async function getMovie(movieId, entityManager : EntityManager){
     const movieRepo = entityManager.getRepository(Movie);
 
     return await movieRepo.findOne({
@@ -100,18 +110,39 @@ export async function evaluateMovie(userId, movieId, appreciate, seen){
     movieReviewRepo.save(review);
 }
 
-export async function getBestRatedMoviesBy(usersId : number[]){
+export async function getBestRatedMoviesBy(usersId : number[], start = 0){
     const movieReviewRepo = AppDataSource.getRepository(MovieReview);
-    const movies = await movieReviewRepo.createQueryBuilder("review")
-        .select("review.movieId")
-        .addSelect("AVG(review.appreciate)", "avg")
-        .where("review.userId IN (:...users)", {users: usersId})
-        .groupBy("review.movieId")
-        .orderBy("avg", "DESC")
-        .limit(10)
-        .getRawMany();
+    try{
+        const movies = await movieReviewRepo.createQueryBuilder("review")
+            .select("review.movieId", "movieId")
+            .addSelect("SUM(review.appreciate)", "appreciateCount")
+            .where("review.userId IN (:...users)", {users: usersId})
+            .groupBy("review.movieId")
+            .orderBy("appreciateCount", "DESC")
+            .offset(start)
+            .limit(10)
+            .getRawMany();
+        
+        return movies;
+    }
+    catch(error){
+        console.log(error);
+        return [];
+    }
+}
 
-    console.log(movies);
+export async function getUserWhoLiked(movieId: number, usersId: number[]){
+    const movieReviewRepo = AppDataSource.getRepository(MovieReview);
 
-    return movies;
+    const reviews = await movieReviewRepo.find({
+        select: ["user"],
+        where: {
+            movieId: movieId,
+            userId: In(usersId), 
+            appreciate: true, 
+        },
+        relations: ["user"]
+    });
+
+    return reviews.map(review => review.user);
 }

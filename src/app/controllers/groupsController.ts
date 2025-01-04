@@ -7,7 +7,7 @@ import {
 } from "../services/store/groupStore.js";
 import {User} from "../entity/User.js";
 import {Group} from "../entity/Group.js";
-import { getBestRatedMoviesBy } from "../services/store/movieStore.js";
+import { getBestRatedMoviesBy, getMovieWithoutTransaction, getUserWhoLiked as getUsersWhoLiked } from "../services/store/movieStore.js";
 
 export const getUserPersonalGroups : RequestHandler = async (req, res) => {
     const user = req.body.user;
@@ -54,10 +54,25 @@ export const getGroupSuggestions: RequestHandler = async (req, res) => {
             res.status(400).json({message: "Invalid query parameter"});
             return;
         }
+        if(typeof req.query.start !== "string" ){
+            res.status(400).json({message: "Invalid query parameter"});
+            return
+        }
+
         const selectedUsersId = req.query.u.map((id: string) => parseInt(id));
-        const suggestions = await getBestRatedMoviesBy(selectedUsersId)
-        res.json({ suggestions: suggestions });
+        const suggestions = [];
+        const rawSuggestions = await getBestRatedMoviesBy(selectedUsersId, parseInt(req.query.start));
+        for(const suggestion of rawSuggestions){
+            const users = await getUsersWhoLiked(suggestion.movieId, selectedUsersId);
+            const movie = await getMovieWithoutTransaction(suggestion.movieId);
+            suggestions.push({
+                movie,
+                users
+            });
+        }
+        res.json(suggestions);
     } catch (error) {
+        console.error(error);
         res.status(500).json(error);
     }
 }

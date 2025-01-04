@@ -70,9 +70,16 @@ export async function joinGroup(code: string, user: User) {
 }
 
 export async function getGroupOfUser(userId: number) {
-    const groupRepo = AppDataSource.getRepository(Group);
-    const groups = await groupRepo.find({ where: { ownerId: userId }, relations: ["users"] });
-    
+    const userRepo = AppDataSource.getRepository(User);
+
+
+    const userWithGroups = await userRepo.findOne({
+        where: { id: userId },
+        relations: ["groups"],
+    });
+
+    const groups = userWithGroups.groups;
+      
     if (!groups) {
         throw new Error(`User not found`);
     }
