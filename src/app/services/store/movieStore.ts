@@ -116,9 +116,14 @@ export async function getBestRatedMoviesBy(usersId : number[], start = 0){
         const movies = await movieReviewRepo.createQueryBuilder("review")
             .select("review.movieId", "movieId")
             .addSelect("SUM(review.appreciate)", "appreciateCount")
+            .leftJoin("review.movie", "movie")
+            .addSelect("movie.vote_avg", "vote_avg")
             .where("review.userId IN (:...users)", {users: usersId})
             .groupBy("review.movieId")
-            .orderBy("appreciateCount", "DESC")
+            .orderBy({
+                "appreciateCount": "DESC",
+                "movie.vote_avg": "DESC",
+            })
             .offset(start)
             .limit(10)
             .getRawMany();
