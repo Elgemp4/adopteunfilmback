@@ -11,7 +11,11 @@ export async function suggestMovies(userId: number, providerIds: number[]){
 
     while(true){
         const suggestedMovies = await getPage(page, providerIds);
-        
+        console.log(suggestedMovies);
+        if(suggestedMovies.results.length == 0){
+            return unreviewedMovies;
+        }
+
         for(const movie of suggestedMovies.results){
             const review = await getUserReview(userId, movie.id);
             if(review == undefined){
@@ -34,7 +38,7 @@ async function getPage(page: Number, watchProviders){
         language: "fr-FR",
         watch_region: "BE",
         page,
-        with_watch_providers: watchProviders,
+        with_watch_providers: watchProviders.join("|"),
         sort_by: "popularity.desc"
     }
 

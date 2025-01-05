@@ -10,7 +10,6 @@ export const suggestMoviesController : RequestHandler = async (req, res) => {
 
   try{
     const providerIds : number[] = (await getUserProviders(userId)).map((provider) => provider.provider_id);
-    console.log(providerIds);
     const unsavedMovies = await suggestMovies(userId, providerIds);
 
     const savedMovies = await saveMoviesIfNotExists(unsavedMovies);
