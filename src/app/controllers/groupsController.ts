@@ -52,7 +52,9 @@ const isArrayOfStrings = (value: any): value is string[] =>
 
 export const getGroupSuggestions: RequestHandler = async (req, res) => {
     try {
-        if(!isArrayOfStrings(req.query.u)){
+        const users = req.query.u;
+
+        if(!isArrayOfStrings(users) && typeof users !== "string"){
             res.status(400).json({message: "Invalid query parameter"});
             return;
         }
@@ -60,8 +62,14 @@ export const getGroupSuggestions: RequestHandler = async (req, res) => {
             res.status(400).json({message: "Invalid query parameter"});
             return
         }
-
-        const selectedUsersId = req.query.u.map((id: string) => parseInt(id));
+        let selectedUsersId;
+        if(typeof users === "string"){
+            selectedUsersId = [parseInt(users)];
+        }
+        else{
+            selectedUsersId = users.map((id: string) => parseInt(id));
+        }
+        
         const suggestions = [];
         const rawSuggestions = await getBestRatedMoviesBy(selectedUsersId, parseInt(req.query.start));
         for(const suggestion of rawSuggestions){

@@ -3,9 +3,6 @@ import AppDataSource from "../../data-source.js";
 import Genre from "../../entity/Genre.js";
 import Movie from "../../entity/Movie.js";
 import MovieReview from "../../entity/MovieReview.js";
-import { raw } from "express";
-import { User } from "../../entity/User.js";
-import app from "../../app.js";
 
 export async function getUserReview(userId, movieId){
     const movieReviewRepo = AppDataSource.getRepository(MovieReview);
