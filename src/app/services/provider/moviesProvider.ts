@@ -15,6 +15,7 @@ export async function suggestMovies(userId: number, providerIds: number[]){
         for(const movie of suggestedMovies.results){
             const review = await getUserReview(userId, movie.id);
             if(review == undefined){
+                console.log(movie);
                 unreviewedMovies.push(movie);
             }
 
