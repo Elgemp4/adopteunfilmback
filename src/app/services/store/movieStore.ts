@@ -118,6 +118,7 @@ export async function getBestRatedMoviesBy(usersId : number[], start = 0){
             .addSelect("movie.vote_avg", "vote_avg")
             .where("review.userId IN (:...users)", {users: usersId})
             .groupBy("review.movieId")
+            .having("SUM(review.seen) < :usersCount", {usersCount: usersId.length})
             .orderBy({
                 "appreciateCount": "DESC",
                 "movie.vote_avg": "DESC",
@@ -125,7 +126,6 @@ export async function getBestRatedMoviesBy(usersId : number[], start = 0){
             .offset(start)
             .limit(10)
             .getRawMany();
-        
         return movies;
     }
     catch(error){

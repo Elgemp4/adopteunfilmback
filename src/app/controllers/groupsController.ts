@@ -1,13 +1,12 @@
 import {RequestHandler} from "express";
 import {
-    getGroupOfUser,
+    getGroupsOfUser,
     createGroup,
     joinGroup,
-    getUserInGroup
 } from "../services/store/groupStore.js";
 import {User} from "../entity/User.js";
 import {Group} from "../entity/Group.js";
-import { getBestRatedMoviesBy, getMovieWithoutTransaction, getUserWhoLiked as getUsersWhoLiked } from "../services/store/movieStore.js";
+import { evaluateMovie, getBestRatedMoviesBy, getMovieWithoutTransaction, getUserReview, getUserWhoLiked as getUsersWhoLiked } from "../services/store/movieStore.js";
 import "dotenv/config";
 
 
@@ -15,7 +14,7 @@ export const getUserPersonalGroups : RequestHandler = async (req, res) => {
     const user = req.body.user;
 
     try {
-        const groups = await getGroupOfUser(user.id);
+        const groups = await getGroupsOfUser(user.id);
 
         res.json({ groups });
     } catch (error) {
@@ -47,31 +46,12 @@ export const joinGroupHandler: RequestHandler = async (req, res) => {
     }
 }
 
-const isArrayOfStrings = (value: any): value is string[] =>
-    Array.isArray(value) && value.every((item) => typeof item === 'string');
 
 export const getGroupSuggestions: RequestHandler = async (req, res) => {
     try {
-        const users = req.query.u;
-
-        if(!isArrayOfStrings(users) && typeof users !== "string"){
-            res.status(400).json({message: "Invalid query parameter"});
-            return;
-        }
-        if(typeof req.query.start !== "string" ){
-            res.status(400).json({message: "Invalid query parameter"});
-            return
-        }
-        let selectedUsersId;
-        if(typeof users === "string"){
-            selectedUsersId = [parseInt(users)];
-        }
-        else{
-            selectedUsersId = users.map((id: string) => parseInt(id));
-        }
-        
-        const suggestions = [];
-        const rawSuggestions = await getBestRatedMoviesBy(selectedUsersId, parseInt(req.query.start));
+        const selectedUsersId = req.body["selectedUsersId"];
+        const suggestions = []; 
+        const rawSuggestions = await getBestRatedMoviesBy(selectedUsersId, parseInt(req.params.start));
         for(const suggestion of rawSuggestions){
             const users = await getUsersWhoLiked(suggestion.movieId, selectedUsersId);
             const movie = await getMovieWithoutTransaction(suggestion.movieId);
@@ -84,7 +64,26 @@ export const getGroupSuggestions: RequestHandler = async (req, res) => {
         }
         res.json(suggestions);
     } catch (error) {
-        console.error(error);
         res.status(500).json(error);
     }
 }
+
+
+export const setMovieSeenByGroup: RequestHandler = async (req, res) => {
+    const user = req.body.user;
+    let selectedUsersId = req.body["selectedUsersId"];
+
+    try {
+        const groupId = parseInt(req.params.id);
+        const movieId = parseInt(req.params.movieId);
+
+        for(const userId of selectedUsersId){
+            const review = await getUserReview(userId, movieId);
+            evaluateMovie(userId, movieId, review?.appreciate, true);
+        }
+
+        res.status(200).send();
+    }catch(error){
+        res.status(500).json({message: error.message});
+    }
+};
