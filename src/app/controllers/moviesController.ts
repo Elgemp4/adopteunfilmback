@@ -10,13 +10,12 @@ export const suggestMoviesController : RequestHandler = async (req, res) => {
 
   try{
     const providerIds : number[] = (await getUserProviders(userId)).map((provider) => provider.provider_id);
-    
     const unsavedMovies = await suggestMovies(userId, providerIds);
 
     const savedMovies = await saveMoviesIfNotExists(unsavedMovies);
     
     for(const movie of savedMovies){
-      movie.poster_path = `https://image.tmdb.org/t/p/w500/${movie.poster_path}`
+      movie.poster_path = `${process.env.POSTER_URL}${movie.poster_path}`
     }
     res.json(savedMovies);
   } 

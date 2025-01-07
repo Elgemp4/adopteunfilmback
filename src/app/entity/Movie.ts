@@ -15,7 +15,7 @@ export default class Movie{
     @Column({type: "text"})
     description: string
 
-    @Column()
+    @Column({nullable: true})
     release_date: Date
 
     @Column()
