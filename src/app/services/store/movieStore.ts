@@ -104,7 +104,7 @@ export async function evaluateMovie(userId, movieId, appreciate, seen){
     }
     
     review.appreciate = JSON.parse(appreciate);
-    review.seen = seen == JSON.parse(appreciate);
+    review.seen = JSON.parse(appreciate);
     movieReviewRepo.save(review);
 }
 
