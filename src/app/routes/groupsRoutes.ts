@@ -4,10 +4,12 @@ import {
     createGroupHandler,
     getGroupSuggestions,
     getUserPersonalGroups,
-    joinGroupHandler
+    joinGroupHandler,
+    setMovieSeenByGroup
 } from "../controllers/groupsController.js";
 import validate from "../middleware/validate.js";
 import {body} from "express-validator";
+import group_validate_users from "../middleware/group_validate_users.js";
 
 const groupRouter = Router();
 
@@ -22,11 +24,19 @@ groupRouter.post("/create",
         body("name").isString().escape()
     ]),
     createGroupHandler
-)
+);
 
-groupRouter.get("/:id/suggestions", 
+groupRouter.get("/:id/suggestions/:start", 
     authenticate, 
-    getGroupSuggestions);
+    group_validate_users,
+    getGroupSuggestions
+);
+
+groupRouter.post("/:id/seen/:movieId",
+    authenticate,
+    group_validate_users,
+    setMovieSeenByGroup
+);
 
 groupRouter.post("/join",
     authenticate,

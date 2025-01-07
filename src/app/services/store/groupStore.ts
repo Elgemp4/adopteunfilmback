@@ -69,7 +69,7 @@ export async function joinGroup(code: string, user: User) {
     return group;
 }
 
-export async function getGroupOfUser(userId: number) {
+export async function getGroupsOfUser(userId: number) {
     const userRepo = AppDataSource.getRepository(User);
 
 
