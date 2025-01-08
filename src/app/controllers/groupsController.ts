@@ -79,7 +79,7 @@ export const setMovieSeenByGroup: RequestHandler = async (req, res) => {
 
         for(const userId of selectedUsersId){
             const review = await getUserReview(userId, movieId);
-            evaluateMovie(userId, movieId, review?.appreciate, true);
+            await evaluateMovie(userId, movieId, review?.appreciate ?? true, true);
         }
 
         res.status(200).send();
