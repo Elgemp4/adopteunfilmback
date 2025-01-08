@@ -72,7 +72,6 @@ async function createMovieFromRaw(rawMovie, entityManager : EntityManager = AppD
     const genreRepo = entityManager.getRepository(Genre);
     const movieRepo = entityManager.getRepository(Movie);
 
-    console.log(rawMovie);
     const movie = movieRepo.create({
         id: rawMovie.id,
         adult: rawMovie.adult,
